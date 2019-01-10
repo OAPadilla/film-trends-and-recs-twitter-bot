@@ -13,15 +13,54 @@ from selenium.common.exceptions import TimeoutException, \
 from time import sleep
 
 
-# class LetterboxdScraper:
-#
-#     def __init__(self, url_list):
-#         self.url_list = url_list
-#
-#     def open_browser(self):
-#         print('Starting driver...')
-#
-#
+class LetterboxdScraper:
+
+    def __init__(self, url_list, driver_path):
+        self.url_list = url_list
+        self.driver_path = driver_path
+
+    # Start the web browser/driver
+    def open_browser(self):
+        print('Starting driver...')
+        options = webdriver.ChromeOptions()
+        options.add_argument("--headless")
+        options.add_argument("--incognito")
+        self.driver = webdriver.Chrome(executable_path=self.driver_path, chrome_options=options)
+
+    # Close the web browser/driver
+    def close_browser(self):
+        self.driver.quit()
+        print("Driver closed.")
+
+    # Gets inner HTML of browser page
+    def get_html(self, url):
+        self.driver.get(url)
+        inner_html = self.driver.execute_script("return document.body.innerHTML")
+        return inner_html
+
+    def get_watchlist_titles(self, url):
+        watchlist_titles = []
+        innerHTML = self.get_html(url)
+
+        # parse with BeautifulSoup
+
+        return watchlist_titles
+
+    def get_recent_diary_entries(self, url):
+        diary_entries = []
+        innerHTML = self.get_html(url)
+
+        # parse with BeautifulSoup
+
+        return diary_entries
+
+    def get_popular_films(self, url):
+        pop_films = []
+        innerHTML = self.get_html(url)
+
+        # parse with BeautifulSoup
+
+        return pop_films
 
 
 
@@ -104,14 +143,6 @@ def get_diary_entry():
     return
 
 
-def get_watchlist_titles(url):
-    watchlist_titles = []
-    innerHTML = driver.execute_script("return document.body.innerHTML")
-
-    # parse with BeautifulSoup
-
-    return watchlist_titles
-
 
 def get_title_by_text(text):
     """Find title in the page with given text"""
@@ -129,22 +160,17 @@ def get_title_by_class_name(class_name):
 
 
 if __name__ == '__main__':
-    print('Start...')
 
     url_watchlist = "https://letterboxd.com/narrowlightbulb/watchlist/"
+    url_diary = ''
+    url_pop_films = ''
 
-    options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
-    options.add_argument("--incognito")
-    # create new instance of Chrome
-    # FIXME: webdriver has personal pathname, maybe keep it in project folder
-    driver = webdriver.Chrome(executable_path=r'C:\Users\Oscar\AppData\Local\Google\Chrome\chromedriver.exe',
-                              chrome_options=options)
-    driver.get(url_watchlist)
+    url_list = [url_watchlist, url_diary, url_pop_films]
+    driver_path = r'C:\Users\Oscar\AppData\Local\Google\Chrome\chromedriver.exe'
 
-    watchlist = get_watchlist_titles(url_watchlist)
-
-    driver.quit()
-
-
+    lb = LetterboxdScraper(url_list, driver_path)
+    # open browser
+    # get pages, innerHTML
+    # close bowser
+    # parse html for use
 
