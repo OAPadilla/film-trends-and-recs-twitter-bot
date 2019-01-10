@@ -1,4 +1,6 @@
-from requests import get 
+#!/bin/python
+
+from requests import get
 from requests.exceptions import RequestException 
 from contextlib import closing
 from bs4 import BeautifulSoup
@@ -8,7 +10,19 @@ from selenium.webdriver.support.ui import WebDriverWait             #for waiting
 from selenium.webdriver.support import expected_conditions as EC    #specify what you're looking for on specific page in order to determine that the webpage has loaded
 from selenium.common.exceptions import TimeoutException, \
     NoSuchElementException, WebDriverException                      #handling a timeout situation
-import time
+from time import sleep
+
+
+# class LetterboxdScraper:
+#
+#     def __init__(self, url_list):
+#         self.url_list = url_list
+#
+#     def open_browser(self):
+#         print('Starting driver...')
+#
+#
+
 
 
 def simple_get_html(url):
@@ -90,27 +104,47 @@ def get_diary_entry():
     return
 
 
-def get_watchlist():
-    return
+def get_watchlist_titles(url):
+    watchlist_titles = []
+    innerHTML = driver.execute_script("return document.body.innerHTML")
+
+    # parse with BeautifulSoup
+
+    return watchlist_titles
+
+
+def get_title_by_text(text):
+    """Find title in the page with given text"""
+    element = driver.find_element_by_class_name
+
+
+def get_title_by_class_name(class_name):
+    element_list = []
+    try:
+        all_elements = driver.find_elements_by_class_name(class_name)
+        element_list = [x.text for x in all_elements if len(x.text) > 0]
+    except (NoSuchElementException, WebDriverException) as e:
+        print(e)
+    return element_list
 
 
 if __name__ == '__main__':
     print('Start...')
 
+    url_watchlist = "https://letterboxd.com/narrowlightbulb/watchlist/"
+
     options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
     options.add_argument("--incognito")
     # create new instance of Chrome
+    # FIXME: webdriver has personal pathname, maybe keep it in project folder
     driver = webdriver.Chrome(executable_path=r'C:\Users\Oscar\AppData\Local\Google\Chrome\chromedriver.exe',
                               chrome_options=options)
-    driver.get('https://python.org')
+    driver.get(url_watchlist)
 
-    timeout = 20
+    watchlist = get_watchlist_titles(url_watchlist)
 
-    try:
-        WebDriverWait(driver, timeout).until(EC.visibility_of_element_located((By.XPATH, "//img[@class='avatar width-full rounded-2']")))
-    except TimeoutException:
-        print("Timed out waiting for page to load")
-        driver.quit()
+    driver.quit()
 
 
 
