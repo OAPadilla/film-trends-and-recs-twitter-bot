@@ -11,6 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC    #specify wha
 from selenium.common.exceptions import TimeoutException, \
     NoSuchElementException, WebDriverException                      #handling a timeout situation
 from time import sleep
+import re
 
 
 class LetterboxdScraper:
@@ -85,12 +86,36 @@ class LetterboxdScraper:
 
     # Gets Letterboxd's most popular films of the week
     def get_popular_films(self, url):
-        pop_films = []
         inner_html = self.get_html(url)
 
-        # parse with BeautifulSoup
+        if inner_html is not None:
+            popular = []
 
-        return pop_films
+            soup = BeautifulSoup(inner_html, 'html.parser')
+            films = soup.find_all('li', {'class': 'listitem'})
+            num_ranks = 8
+            count = 0
+
+            for film in films:
+                if count == num_ranks:
+                    break
+                count += 1
+
+                film_rank = count
+                film_title = film.div['data-film-name']
+                film_year = film.div['data-film-release-year']
+
+                watches = film.find('li', {'class': 'stat filmstat-watches'}).a['data-original-title']
+                watches = "".join(re.findall("[0-9]", watches))
+
+                likes = film.find('li', {'class': 'stat filmstat-likes'}).a['data-original-title']
+                likes = "".join(re.findall("[0-9]", likes))
+
+                popular.append({"rank": film_rank, "title": film_title, "year": film_year,
+                                "watches": watches, "likes": likes})
+
+            return popular
+        raise Exception('Error retrieving contents at {}'.format(url))
 
 
 if __name__ == '__main__':
@@ -103,7 +128,8 @@ if __name__ == '__main__':
     lb = LetterboxdScraper(driver_path)
     lb.open_browser()
     #lb.get_watchlist_films(url_watchlist)
-    lb.get_recent_diary_entries(url_diary)
+    #lb.get_recent_diary_entries(url_diary)
+    lb.get_popular_films(url_pop_films)
     lb.close_browser()
 
 
