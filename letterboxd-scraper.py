@@ -35,7 +35,7 @@ class LetterboxdScraper:
     # Gets inner HTML of browser page
     def get_html(self, url):
         """
-        Navigates driver to link, scrolls to bottom of page, and extracts the HTML with JS incl
+        Navigates driver to link, scrolls to bottom of page, and extracts the HTML with JS incl.
         :return: string
         """
         self.driver.get(url)
@@ -49,21 +49,30 @@ class LetterboxdScraper:
 
     def get_watchlist_films(self, url):
         """
-        Downloads watchlist page with url, parses film titles
+        Downloads watchlist page with url, and parses film titles.
         :return: string array
         """
         inner_html = self.get_html(url)
 
         if inner_html is not None:
-            soup = BeautifulSoup(inner_html, 'html.parser').find_all("span", {"class": "frame-title"})
-            films = [x.get_text() for x in soup]
-            return films
-        raise Exception('Error retrieving contents at {}'.format(url))
+            watchlist = []
+
+            soup = BeautifulSoup(inner_html, 'html.parser')
+            films = soup.find_all('li', {'class': 'poster-container'})
+
+            for film in films:
+                film_title = film.div['data-film-name']
+                film_year = film.div['data-film-release-year']
+
+                watchlist.append({"title": film_title, "year": film_year})
+
+            return watchlist
+        raise Exception('Error retrieving contents at {}'.format("<url>"))
 
     def get_recent_diary_entries(self, url):
         """
-        Downloads diary entry page with url, parses film titles, years, and ratings
-        :return: string array
+        Downloads diary entry page with url, and parses film titles, years, and ratings.
+        :return: array of dictionaries
         """
         inner_html = self.get_html(url)
 
@@ -84,8 +93,12 @@ class LetterboxdScraper:
             return diary
         raise Exception('Error retrieving contents at {}'.format(url))
 
-    # Gets Letterboxd's most popular films of the week
     def get_popular_films(self, url):
+        """
+        Downloads popular films of the week with url, parses film ranks, titles, years, number of watches,
+        and number of likes.
+        :return: array of dictionaries
+        """
         inner_html = self.get_html(url)
 
         if inner_html is not None:
