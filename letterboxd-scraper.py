@@ -33,15 +33,23 @@ class LetterboxdScraper:
 
     # Gets inner HTML of browser page
     def get_html(self, url):
+        """
+        Navigates driver to link, scrolls to bottom of page, and extracts the HTML with JS incl
+        :return: string
+        """
         self.driver.get(url)
+        sleep(3)
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
+        sleep(5)
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        sleep(5)
         inner_html = self.driver.execute_script("return document.body.innerHTML")
         return inner_html
 
-    # Gets film titles of user's watchlist
     def get_watchlist_films(self, url):
         """
-        Downloads watchlist page from url, parses the film titles and
-        returns strings in an array.
+        Downloads watchlist page with url, parses film titles
+        :return: string array
         """
         inner_html = self.get_html(url)
 
@@ -49,17 +57,31 @@ class LetterboxdScraper:
             soup = BeautifulSoup(inner_html, 'html.parser').find_all("span", {"class": "frame-title"})
             films = [x.get_text() for x in soup]
             return films
-        # Raise an exception if we failed to get any data from the url
         raise Exception('Error retrieving contents at {}'.format(url))
 
-    # Gets film titles of user's recent diary entries
     def get_recent_diary_entries(self, url):
-        diary_entries = []
+        """
+        Downloads diary entry page with url, parses film titles, years, and ratings
+        :return: string array
+        """
         inner_html = self.get_html(url)
 
-        # parse with BeautifulSoup
+        if inner_html is not None:
+            diary = []
 
-        return diary_entries
+            soup = BeautifulSoup(inner_html, 'html.parser')
+            entries = soup.find_all('tr', {'class': 'diary-entry-row'})
+
+            for entry in entries:
+                film_detail = entry.find('td', {'class': 'td-film-details'})
+                entry_title = film_detail.div['data-film-name']
+                entry_year = film_detail.div['data-film-release-year']
+                entry_rating = entry.find('td', {'class': 'td-rating rating-green'}).div.span.meta['content']
+
+                diary.append({"title": entry_title, "year": entry_year, "rating": entry_rating})
+
+            return diary
+        raise Exception('Error retrieving contents at {}'.format(url))
 
     # Gets Letterboxd's most popular films of the week
     def get_popular_films(self, url):
@@ -80,7 +102,8 @@ if __name__ == '__main__':
 
     lb = LetterboxdScraper(driver_path)
     lb.open_browser()
-    lb.get_watchlist_films(url_watchlist)
+    #lb.get_watchlist_films(url_watchlist)
+    lb.get_recent_diary_entries(url_diary)
     lb.close_browser()
 
 
