@@ -1,21 +1,27 @@
-#!/bin/python
+#!/usr/bin/env python3
 
+"""letterboxd-scraper.py: Scrapes information from Letterboxd, a social network site for film."""
+
+import re
+from time import sleep
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
-from time import sleep
-import re
+
+__author__ = "Oscar Antonio Padilla"
+__email__ = "PadillaOscarA@gmail.com"
+__status__ = "Development"
 
 
 class LetterboxdScraper:
 
+    DRIVER_PATH = r'C:\Users\Oscar\AppData\Local\Google\Chrome\chromedriver.exe'
     URL_WATCHLIST = "https://letterboxd.com/{}/watchlist/"
     URL_DIARY = 'https://letterboxd.com/{}/films/diary/'
-    # URL_POP_FILMS = 'https://letterboxd.com/films/'
-    URL_POP_FILMS = 'http://oapadilla.com/'
+    URL_POP_FILMS = 'https://letterboxd.com/films/'
 
-    def __init__(self, dp):
-        self.driver_path = dp
+    def __init__(self):
+        self.driver_path = LetterboxdScraper.DRIVER_PATH
         self.driver = None
 
     def open_browser(self):
@@ -54,7 +60,7 @@ class LetterboxdScraper:
         Downloads watchlist page with url, and parses film titles.
         :return: Array of Dictionaries
         """
-        url = self.URL_WATCHLIST.format(username)
+        url = LetterboxdScraper.URL_WATCHLIST.format(username)
         inner_html = self.get_html(url)
         watchlist = []
 
@@ -77,7 +83,7 @@ class LetterboxdScraper:
         Downloads diary entry page with url, and parses film titles, years, and ratings.
         :return: Array of Dictionaries
         """
-        url = self.URL_DIARY.format(username)
+        url = LetterboxdScraper.URL_DIARY.format(username)
         inner_html = self.get_html(url)
         diary = []
 
@@ -103,7 +109,7 @@ class LetterboxdScraper:
         and number of likes.
         :return: Array of Dictionaries
         """
-        inner_html = self.get_html(self.URL_POP_FILMS)
+        inner_html = self.get_html(LetterboxdScraper.URL_POP_FILMS)
         popular = []
 
         try:
@@ -113,6 +119,8 @@ class LetterboxdScraper:
             count = 0
 
             for film in films:
+                # Keep count/rank as 'films' is iterated through.
+                # If we want to go beyond the first 8, we must use Selenium to scroll right.
                 if count == num_ranks:
                     break
                 count += 1
@@ -138,9 +146,8 @@ class LetterboxdScraper:
 if __name__ == '__main__':
 
     user = "narrowlightbulb"
-    driver_path = r'C:\Users\Oscar\AppData\Local\Google\Chrome\chromedriver.exe'
 
-    lb = LetterboxdScraper(driver_path)
+    lb = LetterboxdScraper()
     lb.open_browser()
     #print(lb.get_watchlist_films(user))
     #print(lb.get_recent_diary_entries(user))
