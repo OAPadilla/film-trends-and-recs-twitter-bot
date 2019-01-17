@@ -1,3 +1,4 @@
 .idea/
+secrets.py
 page.html
-test_parser.py
+__pycache__

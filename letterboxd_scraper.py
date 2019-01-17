@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""letterboxd-scraper.py: Scrapes information from Letterboxd, a social network site for film."""
+"""letterboxd_scraper.py: Scrapes information from Letterboxd, a social network site for film."""
 
 import re
 from time import sleep
@@ -136,7 +136,7 @@ class LetterboxdScraper:
                 likes = "".join(re.findall("[0-9]", likes))
 
                 popular.append({"rank": film_rank, "title": film_title, "year": film_year,
-                                "watches": watches, "likes": likes})
+                                "watches": int(watches), "likes": int(likes)})
         except NoSuchElementException as e:
             print(e)
 
