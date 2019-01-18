@@ -14,7 +14,7 @@ def connect_db():
         print(e)
 
 
-def create_weekly_top_table(conn, sql):
+def db_create_weekly_top_table(conn, sql):
     try:
         c = conn.cursor()
         c.execute(sql)
@@ -22,18 +22,29 @@ def create_weekly_top_table(conn, sql):
         print(e)
 
 
-def insert_weekly_top(conn, task):
-    sql = '''INSERT INTO popular_films (id, rank, title, year, watches, likes, date)
-             VALUES (?,?,?,?,?,?,CURRENT_DATE)'''
+def db_insert_weekly_top(conn, task):
+    sql = '''INSERT INTO popular_films (rank, title, year, watches, likes, date)
+             VALUES (?,?,?,?,?,CURRENT_DATE)'''
     c = conn.cursor()
     c.execute(sql, task)
     conn.commit()
+    return c.lastrowid
 
 
-def select_weekly_top(conn):
+def db_select_weekly_top(conn):
     c = conn.cursor()
     c.execute('''SELECT * FROM popular_films WHERE date = CURRENT_DATE''')
-    conn.commit()
+    rows = c.fetchall()
+    return rows
+
+
+def db_select_prev_rank(conn, task):
+    sql = '''SELECT rank FROM popular_films WHERE title = ? AND year = ? AND date != CURRENT_DATE
+             ORDER BY date DESC'''
+    c = conn.cursor()
+    c.execute(sql, task)
+    prev_rank = c.fetchone()[0]
+    return prev_rank
 
 
 def main():
@@ -48,4 +59,7 @@ def main():
                                     date date NOT NULL
                                   );'''
 
-    conn.close()
+
+
+
+

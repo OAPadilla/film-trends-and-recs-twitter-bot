@@ -1,4 +1,6 @@
 .idea/
+*.sqlite3
+test-sqlite.py
 secrets.py
 page.html
 __pycache__
