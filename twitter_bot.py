@@ -2,6 +2,7 @@ import tweepy
 from secrets import *
 from sqlite_db import *
 from letterboxd_scraper import *
+from visualize import *
 
 
 # Once a week, call scraper to scrape top 8 movies of the week
@@ -24,13 +25,12 @@ def store_pop_films(films):
     conn.close()
 
 
-# Visualize/format that data
-def format_pop_films():
-    # get weekly top films and prev ranks
+# Visualize the data
+def visualize_pop_films():
     conn = connect_db()
+    # Get weekly top films with previous ranks and prepare the data for visualization
     films = db_select_weekly_top(conn)
     for f in range(len(films)):
-        # append prev_rank to films tuples
         prev_rank = db_select_prev_rank(conn, (films[f][1], films[f][2]))
         films[f] = (films[f][0], films[f][1], films[f][2], films[f][3], films[f][4], films[f][5], prev_rank)
     print(films)
@@ -43,7 +43,7 @@ def tweet_weekly_pop_films():
     # Store scraped data
     store_pop_films(films_of_the_week)
     # Visualize/format data
-    format_pop_films()
+    visualize_pop_films()
     # Tweet out
     print("Tweeting...")
 
@@ -60,6 +60,6 @@ if __name__ == '__main__':
 
     #tweet_weekly_pop_films()
 
-    format_pop_films()
+    visualize_pop_films()
 
 

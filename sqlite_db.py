@@ -14,7 +14,7 @@ def connect_db():
         print(e)
 
 
-def db_create_weekly_top_table(conn, sql):
+def db_create_table(conn, sql):
     try:
         c = conn.cursor()
         c.execute(sql)
@@ -49,9 +49,10 @@ def db_select_prev_rank(conn, task):
     return prev_rank
 
 
-def main():
-    # Create a table for popular films
-    sql_create_popular_table = '''CREATE TABLE popular_films (
+if __name__ == '__main__':
+    conn = connect_db()
+    # Weekly popular films table
+    sql_create_popular_table = '''CREATE TABLE IF NOT EXISTS popular_films (
                                     id integer PRIMARY KEY,
                                     rank integer NOT NULL,
                                     title text NOT NULL,
@@ -60,8 +61,7 @@ def main():
                                     likes integer NOT NULL,
                                     date date NOT NULL
                                   );'''
+    db_create_table(conn, sql_create_popular_table)
+    conn.commit()
 
-
-
-
-
+    conn.close()
