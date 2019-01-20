@@ -1,3 +1,5 @@
+import datetime
+import re
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
@@ -6,17 +8,14 @@ import matplotlib.lines as mlines
 import seaborn as sns
 
 
-large = 22
-med = 16
-small = 12
-params = {'axes.titlesize': large,
-          'legend.fontsize': med,
+
+params = {'axes.titlesize': 22,
+          'legend.fontsize': 16,
           'figure.figsize': (16, 10),
-          'axes.labelsize': med,
-          'axes.titlesize': med,
-          'xtick.labelsize': med,
-          'ytick.labelsize': med,
-          'figure.titlesize': large}
+          'axes.labelsize': 16,
+          'xtick.labelsize': 16,
+          'ytick.labelsize': 16,
+          'figure.titlesize': 22}
 plt.rcParams.update(params)
 plt.style.use('seaborn-whitegrid')
 sns.set_style("white")
@@ -26,10 +25,7 @@ def create_pop_film_chart(data):
 
     pop_df = pd.DataFrame(data, columns=['Rank', 'Title', 'Year', 'Watches', 'Likes', 'Date', 'Previous Rank'])
 
-    right_label = [str(t) + ' (' + str(y) + ')' for t, y in zip(pop_df['Title'], pop_df['Year'])]
-    klass = ['red' if (pr-r) < 0 else 'green' for pr, r in zip(pop_df['Previous Rank'], pop_df['Rank'])]
-
-    # Draws Lines
+    # Draws new lines
     def newline(p1, p2, color='black'):
         ax = plt.gca()
         if p1[1] != 0:
@@ -42,7 +38,7 @@ def create_pop_film_chart(data):
 
     fig, ax = plt.subplots(1, 1, figsize=(9, 6), dpi=80)
 
-    # Vertical Lines
+    # Vertical lines
     ax.vlines(x=0.1, ymin=0, ymax=9, color='black', alpha=0.7, linewidth=1, linestyles='dotted')
     ax.vlines(x=1, ymin=0, ymax=9, color='black', alpha=0.7, linewidth=1, linestyles='dotted')
 
@@ -50,32 +46,34 @@ def create_pop_film_chart(data):
     ax.scatter(y=pop_df['Previous Rank'], x=np.repeat(0.1, pop_df.shape[0]), s=10, color='black', alpha=0.7)
     ax.scatter(y=pop_df['Rank'], x=np.repeat(1, pop_df.shape[0]), s=10, color='black', alpha=0.7)
 
-    # Line Segments and Annotations
+    # Line segments
     for pr, r, t, y in zip(pop_df['Previous Rank'], pop_df['Rank'], pop_df['Title'], pop_df['Year']):
         newline([0.1, pr], [1, r])
         ax.text(1.25-0.05, r, t + ' (' + y + ')', horizontalalignment='left', verticalalignment='center',
                 fontdict={'size': 20})
 
-    # Deooration
-    ax.set_title("Popular Films of the Week", fontdict={'size': 32})
+    # Dates of last week
+    match = re.search(r'\d{4}-\d{2}-\d{2}', str(pop_df['Date']))
+    today_dt = datetime.datetime.strptime(match.group(), '%Y-%m-%d').date()
+    week_ago_dt = today_dt - datetime.timedelta(days=7)
+    today = str(today_dt)[5:7] + '/' + str(today_dt)[8:]
+    week_ago = str(week_ago_dt)[5:7] + '/' + str(week_ago_dt)[8:]
+
+    # Labels
+    ax.set_title("Popular Films of the Week ({}-{})".format(week_ago, today),
+                 fontdict={'size': 32})
     ax.set(xlim=(0, 4), ylim=(8.5, 0.5), ylabel='Rank')
     ax.set_xticks([0.1, 1])
-    ax.set_xticklabels(["Previous", "Now"])
+    ax.set_xticklabels(["Last Week\n" + week_ago, "Today\n" + today])
     plt.xticks(fontsize=12)
     plt.yticks()
 
-    # Borders and Display
+    # Borders and display
     plt.gca().spines["top"].set_alpha(.0)
     plt.gca().spines["bottom"].set_alpha(.0)
     plt.gca().spines["right"].set_alpha(.0)
     plt.gca().spines["left"].set_alpha(.0)
     plt.show()
-
-
-def create_pop_films_plot(data):
-
-    pop_df = pd.DataFrame(data, columns=['Rank', 'Title', 'Year', 'Watches', 'Likes', 'Date', 'Previous Rank'])
-    
 
 
 if __name__ == '__main__':
