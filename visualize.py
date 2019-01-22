@@ -8,7 +8,6 @@ import matplotlib.lines as mlines
 import seaborn as sns
 
 
-
 params = {'axes.titlesize': 22,
           'legend.fontsize': 16,
           'figure.figsize': (16, 10),
@@ -26,7 +25,7 @@ def create_pop_film_chart(data):
     pop_df = pd.DataFrame(data, columns=['Rank', 'Title', 'Year', 'Watches', 'Likes', 'Date', 'Previous Rank'])
 
     # Draws new lines
-    def newline(p1, p2, color='black'):
+    def newline(p1, p2):
         ax = plt.gca()
         if p1[1] != 0:
             l = mlines.Line2D([p1[0], p2[0]], [p1[1], p2[1]], color='green' if p1[1] - p2[1] >= 0 else 'red',
@@ -41,10 +40,6 @@ def create_pop_film_chart(data):
     # Vertical lines
     ax.vlines(x=0.1, ymin=0, ymax=9, color='black', alpha=0.7, linewidth=1, linestyles='dotted')
     ax.vlines(x=1, ymin=0, ymax=9, color='black', alpha=0.7, linewidth=1, linestyles='dotted')
-
-    # Points
-    ax.scatter(y=pop_df['Previous Rank'], x=np.repeat(0.1, pop_df.shape[0]), s=10, color='black', alpha=0.7)
-    ax.scatter(y=pop_df['Rank'], x=np.repeat(1, pop_df.shape[0]), s=10, color='black', alpha=0.7)
 
     # Line segments
     for pr, r, t, y in zip(pop_df['Previous Rank'], pop_df['Rank'], pop_df['Title'], pop_df['Year']):
@@ -77,7 +72,7 @@ def create_pop_film_chart(data):
 
 
 if __name__ == '__main__':
-    data = [
+    data1 = [
         (1, 'Spider-Man: Into the Spider-Verse', '2018', 85603, 45177, '2019-01-25', 3),
         (2, 'The Favourite', '2018', 51138, 19661, '2019-01-25', 2),
         (3, 'Bird Box', '2018', 92460, 16528, '2019-01-25', 1),
@@ -116,4 +111,4 @@ if __name__ == '__main__':
             (7, 'Vice', '2018', 20506, 3998, '2019-02-01', 8)
             ]
 
-    create_pop_film_chart(data)
+    create_pop_film_chart(data1)

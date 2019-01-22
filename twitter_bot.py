@@ -27,13 +27,14 @@ def store_pop_films(films):
 
 # Visualize the data
 def visualize_pop_films():
+    print("Visualizing weekly popular films...")
     conn = connect_db()
     # Get weekly top films with previous ranks and prepare the data for visualization
     films = db_select_weekly_top(conn)
     for f in range(len(films)):
         prev_rank = db_select_prev_rank(conn, (films[f][1], films[f][2]))
         films[f] = (films[f][0], films[f][1], films[f][2], films[f][3], films[f][4], films[f][5], prev_rank)
-    print(films)
+    create_pop_film_chart(films)
 
 
 # Tweets Weekly Popular Films
