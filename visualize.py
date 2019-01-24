@@ -20,7 +20,7 @@ plt.style.use('seaborn-whitegrid')
 sns.set_style("white")
 
 
-def create_pop_film_chart(data):
+def generate_pop_film_chart(data):
 
     pop_df = pd.DataFrame(data, columns=['Rank', 'Title', 'Year', 'Watches', 'Likes', 'Date', 'Previous Rank'])
 
@@ -71,6 +71,9 @@ def create_pop_film_chart(data):
     plt.show()
 
 
+def generate_rec_chart():
+    pass
+
 if __name__ == '__main__':
     data1 = [
         (1, 'Spider-Man: Into the Spider-Verse', '2018', 85603, 45177, '2019-01-25', 3),
@@ -111,4 +114,4 @@ if __name__ == '__main__':
             (7, 'Vice', '2018', 20506, 3998, '2019-02-01', 8)
             ]
 
-    create_pop_film_chart(data1)
+    generate_pop_film_chart(data1)

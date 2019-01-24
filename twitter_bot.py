@@ -34,7 +34,7 @@ def visualize_pop_films():
     for f in range(len(films)):
         prev_rank = db_select_prev_rank(conn, (films[f][1], films[f][2]))
         films[f] = (films[f][0], films[f][1], films[f][2], films[f][3], films[f][4], films[f][5], prev_rank)
-    create_pop_film_chart(films)
+    generate_pop_film_chart(films)
 
 
 # Tweets Weekly Popular Films

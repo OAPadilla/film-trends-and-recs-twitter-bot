@@ -1,58 +1,62 @@
-import os
-import time
+#!/usr/bin/env python3
+
+"""tmdb_api.py: Makes HTTP GET requests for movie information to The Movie Database API"""
+
 import requests
-from requests.exceptions import RequestException
-from contextlib import closing
+import time
 from secrets import *
+
+__author__ = "Oscar Antonio Padilla"
+__email__ = "PadillaOscarA@gmail.com"
+__status__ = "Development"
 
 
 class TheMovieDatabaseAPI:
 
-    details_url = 'https://api.themoviedb.org/3/movie/{}?api_key='
-    search_url = 'https://api.themoviedb.org/3/search/movie?api_key={}&query={}'
-    credits_url = 'https://api.themoviedb.org/3/movie/{}/credits?api_key='
+    URL_SEARCH = 'https://api.themoviedb.org/3/search/movie?api_key={}&query={}'
+    URL_CREDITS = 'https://api.themoviedb.org/3/movie/{}/credits?api_key='
+    URL_DETAILS = 'https://api.themoviedb.org/3/movie/{}?api_key='
 
     def __init__(self, key):
         self.api_key = key
-        self.result = []
 
     def get_movie_id(self, title, year):
         """
-        Gets TMDb movie_id of film from search API call
-        :return: integer
+        Gets TMDb movie_id of film from search TMDb API call
+        :return: Integer
         """
-        m_id = 0
         parsed_title = '+'.join(title.split(' '))
-        url = self.search_url.format(self.api_key, parsed_title)
+        url = self.URL_SEARCH.format(self.api_key, parsed_title)
 
         r = requests.get(url)
         res = r.json()
 
-        # Default movie_id is first result
         if r.status_code == 200:
+            # Default movie_id is first result
             m_id = res['results'][0]['id']
 
-        for movie in res['results']:
-            release_date = movie['release_date']
-            if release_date[:4] == year:
-                m_id = movie['id']
-                break
-        return m_id
+            for movie in res['results']:
+                release_date = movie['release_date']
+                if release_date[:4] == year:
+                    m_id = movie['id']
+                    break
+            return m_id
+        return None
 
     def get_movie_credits(self, title, year, movie_id):
         """
-        Gets cast (first 15), directors, and writers of film from credits API call
-        :return: List of Dictionary
+        Gets cast (first 15), directors, and writers of film from credits TMDb API call
+        :return: List of Dictionaries
         """
         credits = []
 
         if movie_id is None:
             movie_id = self.get_movie_id(title, year)
 
-        url = self.credits_url.format(movie_id) + self.api_key
+        url = self.URL_CREDITS.format(movie_id) + self.api_key
         res = requests.get(url).json()
 
-        cast = [res['cast'][x]['name'] for x in range(min(len(res['cast']), 15))]
+        cast = [res['cast'][x]['name'] for x in range(min(len(res['cast']), 10))]
         directors = [d['name'] for d in res['crew'] if d['department'] == 'Directing']
         writers = [w['name'] for w in res['crew'] if w['department'] == 'Writing']
 
@@ -61,15 +65,15 @@ class TheMovieDatabaseAPI:
 
     def get_movie_details(self, title, year, movie_id):
         """
-        Gets genre, production companies, and avg rating of film from details API call
-        :return: List of Dictionary
+        Gets genre, production companies, and avg rating of film from details TMDb API call
+        :return: List of Dictionaries
         """
         details = []
 
         if movie_id is None:
             movie_id = self.get_movie_id(title, year)
 
-        url = self.details_url.format(movie_id) + self.api_key
+        url = self.URL_DETAILS.format(movie_id) + self.api_key
         res = requests.get(url).json()
 
         genres = [g['name'] for g in res['genres']]
@@ -89,10 +93,10 @@ if __name__ == '__main__':
 
     m = TheMovieDatabaseAPI(TMDB_API_KEY)
     for entry in diary:
-        entry['details'] = m.get_movie_details(entry['title'], entry['year'], None)
-        time.sleep(0.55)
-        entry['credits'] = m.get_movie_credits(entry['title'], entry['year'], None)
+        # entry['details'] = m.get_movie_details(entry['title'], entry['year'], None)
+        # time.sleep(0.55)    # MAX LIMIT: 4 requests per second
+        # entry['credits'] = m.get_movie_credits(entry['title'], entry['year'], None)
         print(entry['title'])
-        time.sleep(0.55)
+        # time.sleep(0.55)
 
     print(diary)
