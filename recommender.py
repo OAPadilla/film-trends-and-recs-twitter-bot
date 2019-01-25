@@ -21,6 +21,17 @@ DATASET_MOVIES = os.path.join(os.path.dirname(__file__), 'datasets', 'tmdb', 'tm
 DATASET_CREDIT = os.path.join(os.path.dirname(__file__), 'datasets', 'tmdb', 'tmdb_5000_credits.csv')
 
 
+def condense_terms(block):
+    """
+    Removes spaces and coverts terms in a block of terms or string to lower case
+    """
+    if isinstance(block, str):
+        return str.lower(block.replace(" ", ""))
+    elif isinstance(block, list):
+        return [str.lower(term.replace(" ", "")) for term in block]
+    return ''
+
+
 def create_metadata_dataframe():
     """
     Prepares a dataframe from the dataset's metadata
@@ -53,7 +64,11 @@ def create_metadata_dataframe():
     metadata_df['writers'] = metadata_df['writers'].apply(lambda x: x[:11] if len(x) >= 10 else x)
     metadata_df = metadata_df.drop(['crew'], axis=1)
 
-    return metadata_df
+    # Condense the metadata so its lowercase and without spaces
+    for row in metadata_df:
+        metadata_df[row] = metadata_df[row].apply(condense_terms)
+
+    return metadata_df.head()
 
 
 def create_user_profile(diary):
@@ -65,12 +80,14 @@ def create_user_profile(diary):
     """
     m = TheMovieDatabaseAPI(TMDB_API_KEY)
     for entry in diary:
+        # GET API request to TMDb API for movie details of entry
         d = m.get_movie_details(entry['title'], entry['year'], None)
         entry['genres'] = d[0]['genres']
         entry['production_companies'] = d[0]['production_companies']
         entry['vote_average'] = d[0]['vote_average']
         time.sleep(0.55)  # MAX LIMIT: 4 requests per second
 
+        # GET API request to TMDb API for movie credits of entry
         c = m.get_movie_credits(entry['title'], entry['year'], None)
         entry['cast'] = c[0]['cast']
         entry['directors'] = c[0]['directors']
@@ -78,7 +95,12 @@ def create_user_profile(diary):
         time.sleep(0.55)
 
     diary_df = pd.DataFrame(diary)
-    return diary_df
+
+    # Condense the metadata so its lowercase and without spaces
+    for row in diary_df:
+        diary_df[row] = diary_df[row].apply(condense_terms)
+
+    return diary_df.head()
 
 
 def make_soup(df):
