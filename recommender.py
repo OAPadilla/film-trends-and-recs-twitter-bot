@@ -4,11 +4,9 @@
 import os
 import time
 import pandas as pd
-import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 from ast import literal_eval
-from nltk import *
 from tmdb_api import *
 from secrets import *
 
@@ -112,23 +110,23 @@ def make_soup(df):
     return ' '.join(soup)
 
 
-def make_matrix(df1, df2):
+def make_sim_matrix(df1_soup, df2_soup):
     """
     Cosine similarity, a measure of similarity between two vectors, is used to create a
-    similarity matrix between movies vectorized with the metadata word soup.
+    similarity matrix between films vectorized with the metadata word soup.
     :return:
     """
     # Frequency counter matrix
-    # count = CountVectorizer()
-    # matrix1 = count.fit_transform(df1['soup'])
-    # matrix2 = count.fit_transform(df2['soup'])
+    count = CountVectorizer()
+    matrix1 = count.fit_transform(df1_soup)
+    matrix2 = count.transform(df2_soup)
     # Cosine similarity matrix
-    # similarity_matrix = cosine_similarity(matrix1, matrix2)
+    similarity_matrix = cosine_similarity(matrix1, matrix2)
 
-    # return similarity_matrix
+    return similarity_matrix
 
 
-def get_recs(diary_df, metadata_df):
+def get_recs(diary_df, metadata_df, sim_matrix):
     recommended_films = []
 
     # Make cosine similarity matrix
@@ -200,7 +198,7 @@ if __name__ == '__main__':
     # Create word soup
     metadata_df['soup'] = metadata_df.apply(make_soup, axis=1)
     user_profile_df['soup'] = user_profile_df.apply(make_soup, axis=1)
-    # Create count matrix and cosine sim
-
+    # Create Cosine Similarity Matrix between dataset metadata and user profile soups
+    sim_matrix = make_sim_matrix(metadata_df['soup'], user_profile_df['soup'])
     # Get recommendations for films in diary df
 
