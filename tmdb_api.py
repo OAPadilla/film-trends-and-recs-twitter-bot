@@ -80,7 +80,7 @@ class TheMovieDatabaseAPI:
         production_co = [p['name'] for p in res['production_companies']]
         average_rating = res['vote_average']
 
-        details.append({'genres': genres, 'production_companies': production_co, 'tmdb_rating': average_rating})
+        details.append({'genres': genres, 'production_companies': production_co, 'vote_average': average_rating})
         return details
 
     def get_film_image(self, film):
