@@ -23,7 +23,7 @@ DATASET_CREDIT = os.path.join(os.path.dirname(__file__), 'datasets', 'tmdb', 'tm
 
 def condense_terms(block):
     """
-    Removes spaces and coverts terms in a block of terms or string to lower case
+    Removes spaces and coverts characters in a array or string to lower case
     """
     if isinstance(block, str):
         return str.lower(block.replace(" ", ""))
@@ -68,7 +68,7 @@ def create_metadata_dataframe():
     for row in metadata_df:
         metadata_df[row] = metadata_df[row].apply(condense_terms)
 
-    return metadata_df.head()
+    return metadata_df
 
 
 def create_user_profile(diary):
@@ -100,15 +100,16 @@ def create_user_profile(diary):
     for row in diary_df:
         diary_df[row] = diary_df[row].apply(condense_terms)
 
-    return diary_df.head()
+    return diary_df
 
 
 def make_soup(df):
     """
-    Creates word soup of all the metadata in the dataframe
+    Creates word soup of all the relevant metadata of a dataframe
     :return:
     """
-
+    soup = df['genres'] + df['production_companies'] + df['cast'] + df['directors'] + df['writers']
+    return ' '.join(soup)
 
 
 def make_matrix(df1, df2):
@@ -130,9 +131,6 @@ def make_matrix(df1, df2):
 def get_recs(diary_df, metadata_df):
     recommended_films = []
 
-    # Create word soup of dataset metadata
-    # make_soup(metadata_df)
-    # make_soup(diary_df)
     # Make cosine similarity matrix
     # similarity_matrix = make_matrix(metadata_df, soup)
 
@@ -194,12 +192,15 @@ if __name__ == '__main__':
              {'title': 'Blade Runner 2049', 'year': '2017', 'rating': '10'},
              {'title': 'Blade Runner', 'year': '1982', 'rating': '9'}]
 
-    print(create_user_profile(diary))
 
-    # Create dataset df
-
-    # Create diary df
+    # Create dataset df from TMDb dataset metadata
+    metadata_df = create_metadata_dataframe()
+    # Create user profile df from diary
+    user_profile_df = create_user_profile(diary)
     # Create word soup
+    metadata_df['soup'] = metadata_df.apply(make_soup, axis=1)
+    user_profile_df['soup'] = user_profile_df.apply(make_soup, axis=1)
     # Create count matrix and cosine sim
+
     # Get recommendations for films in diary df
 
