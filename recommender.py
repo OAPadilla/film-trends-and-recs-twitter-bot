@@ -19,17 +19,6 @@ DATASET_MOVIES = os.path.join(os.path.dirname(__file__), 'datasets', 'tmdb', 'tm
 DATASET_CREDIT = os.path.join(os.path.dirname(__file__), 'datasets', 'tmdb', 'tmdb_5000_credits.csv')
 
 
-def condense_terms(block):
-    """
-    Removes spaces and coverts characters in a array or string to lower case
-    """
-    if isinstance(block, str):
-        return str.lower(block.replace(" ", ""))
-    elif isinstance(block, list):
-        return [str.lower(term.replace(" ", "")) for term in block]
-    return ''
-
-
 def create_metadata_dataframe():
     """
     Prepares a dataframe from the dataset's metadata
@@ -62,10 +51,6 @@ def create_metadata_dataframe():
     metadata_df['writers'] = metadata_df['writers'].apply(lambda x: x[:11] if len(x) >= 10 else x)
     metadata_df = metadata_df.drop(['crew'], axis=1)
 
-    # Condense the metadata so its lowercase and without spaces
-    # for row in metadata_df:
-    #     metadata_df[row] = metadata_df[row].apply(condense_terms)
-
     return metadata_df
 
 
@@ -94,11 +79,18 @@ def create_user_profile(diary):
 
     diary_df = pd.DataFrame(diary)
 
-    # Condense the metadata so its lowercase and without spaces
-    # for row in diary_df:
-    #     diary_df[row] = diary_df[row].apply(condense_terms)
-
     return diary_df
+
+
+def condense_terms(block):
+    """
+    Removes spaces and coverts characters in a array or string to lower case
+    """
+    if isinstance(block, str):
+        return str.lower(block.replace(" ", ""))
+    elif isinstance(block, list):
+        return [str.lower(term.replace(" ", "")) for term in block]
+    return ''
 
 
 def make_soup(df):
@@ -106,9 +98,11 @@ def make_soup(df):
     Creates word soup of all the relevant metadata of a dataframe
     :return:
     """
+    # Condenses metadata terms, lowercase and no spaces
     tmp_df = df.copy()
     tmp_df = tmp_df.apply(condense_terms)
-    soup = tmp_df['genres'] + tmp_df['production_companies'] + tmp_df['cast'] + tmp_df['directors'] + tmp_df['writers']
+    # Adjust weight of metadata for soup
+    soup = tmp_df['genres']*2 + tmp_df['production_companies'] + tmp_df['cast'] + tmp_df['directors']*2 + tmp_df['writers']
     return ' '.join(soup)
 
 
