@@ -63,8 +63,8 @@ def create_metadata_dataframe():
     metadata_df = metadata_df.drop(['crew'], axis=1)
 
     # Condense the metadata so its lowercase and without spaces
-    for row in metadata_df:
-        metadata_df[row] = metadata_df[row].apply(condense_terms)
+    # for row in metadata_df:
+    #     metadata_df[row] = metadata_df[row].apply(condense_terms)
 
     return metadata_df
 
@@ -95,8 +95,8 @@ def create_user_profile(diary):
     diary_df = pd.DataFrame(diary)
 
     # Condense the metadata so its lowercase and without spaces
-    for row in diary_df:
-        diary_df[row] = diary_df[row].apply(condense_terms)
+    # for row in diary_df:
+    #     diary_df[row] = diary_df[row].apply(condense_terms)
 
     return diary_df
 
@@ -106,7 +106,9 @@ def make_soup(df):
     Creates word soup of all the relevant metadata of a dataframe
     :return:
     """
-    soup = df['genres'] + df['production_companies'] + df['cast'] + df['directors'] + df['writers']
+    tmp_df = df.copy()
+    tmp_df = tmp_df.apply(condense_terms)
+    soup = tmp_df['genres'] + tmp_df['production_companies'] + tmp_df['cast'] + tmp_df['directors'] + tmp_df['writers']
     return ' '.join(soup)
 
 
@@ -116,26 +118,37 @@ def make_sim_matrix(df1_soup, df2_soup):
     similarity matrix between films vectorized with the metadata word soup.
     :return:
     """
-    # Frequency counter matrix
+    # Frequency counter matrices
     count = CountVectorizer()
     matrix1 = count.fit_transform(df1_soup)
     matrix2 = count.transform(df2_soup)
     # Cosine similarity matrix
-    similarity_matrix = cosine_similarity(matrix1, matrix2)
+    similarity_matrix = cosine_similarity(matrix2, matrix1)
 
     return similarity_matrix
 
 
-def get_recs(diary_df, metadata_df, sim_matrix):
+def get_recs(metadata_df, user_profile_df, sim_matrix):
     recommended_films = []
 
-    # Make cosine similarity matrix
-    # similarity_matrix = make_matrix(metadata_df, soup)
+    md_indices = pd.Series(metadata_df.index, index=metadata_df['title'])
+    up_indices = pd.Series(user_profile_df.index, index=user_profile_df['title'])
 
-    # do stuff
+    for film in user_profile_df['title']:
+        # Get index of film in user_profile row
+        idx = up_indices[film]
+        # Get cosine sims for row of current film from user_profile, sort them
+        similarity_vals = pd.Series(sim_matrix[idx]).sort_values(ascending=False)
+        # Store the indices of the top 10 highest cosine sims
+        rec_indices = list(similarity_vals.iloc[1:11].index)
 
+        # filter rec films here
+
+        # Append the recommended films based on current film to our list
+        recommended_films.append(metadata_df['title'].iloc[rec_indices])
+
+    # Return movie_id, title
     return recommended_films
-
 
 
 # Watchlist: Title, Year
@@ -190,7 +203,6 @@ if __name__ == '__main__':
              {'title': 'Blade Runner 2049', 'year': '2017', 'rating': '10'},
              {'title': 'Blade Runner', 'year': '1982', 'rating': '9'}]
 
-
     # Create dataset df from TMDb dataset metadata
     metadata_df = create_metadata_dataframe()
     # Create user profile df from diary
@@ -201,4 +213,5 @@ if __name__ == '__main__':
     # Create Cosine Similarity Matrix between dataset metadata and user profile soups
     sim_matrix = make_sim_matrix(metadata_df['soup'], user_profile_df['soup'])
     # Get recommendations for films in diary df
+    print(get_recs(metadata_df, user_profile_df, sim_matrix))
 
