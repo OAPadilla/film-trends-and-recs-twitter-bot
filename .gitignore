@@ -1,5 +1,6 @@
 .idea/
 datasets/
+images/
 *.sqlite3
 test-sqlite.py
 secrets.py

@@ -3,7 +3,9 @@
 
 import os
 import time
+import collections
 import pandas as pd
+from collections import Counter
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 from ast import literal_eval
@@ -63,19 +65,20 @@ def create_user_profile(diary):
     """
     m = TheMovieDatabaseAPI(TMDB_API_KEY)
     for entry in diary:
-        # GET API request to TMDb API for movie details of entry
-        d = m.get_movie_details(entry['title'], entry['year'], None)
-        entry['genres'] = d[0]['genres']
-        entry['production_companies'] = d[0]['production_companies']
-        entry['vote_average'] = d[0]['vote_average']
-        time.sleep(0.55)  # MAX LIMIT: 4 requests per second
+        if int(entry['rating']) >= 7:
+            # GET API request to TMDb API for movie details of entry
+            d = m.get_movie_details(entry['title'], entry['year'], None)
+            entry['genres'] = d[0]['genres']
+            entry['production_companies'] = d[0]['production_companies']
+            entry['vote_average'] = d[0]['vote_average']
+            time.sleep(0.55)  # MAX LIMIT: 4 requests per second
 
-        # GET API request to TMDb API for movie credits of entry
-        c = m.get_movie_credits(entry['title'], entry['year'], None)
-        entry['cast'] = c[0]['cast']
-        entry['directors'] = c[0]['directors']
-        entry['writers'] = c[0]['writers']
-        time.sleep(0.55)
+            # GET API request to TMDb API for movie credits of entry
+            c = m.get_movie_credits(entry['title'], entry['year'], None)
+            entry['cast'] = c[0]['cast']
+            entry['directors'] = c[0]['directors']
+            entry['writers'] = c[0]['writers']
+            time.sleep(0.55)
 
     diary_df = pd.DataFrame(diary)
 
@@ -134,15 +137,52 @@ def get_recs(metadata_df, user_profile_df, sim_matrix):
         # Get cosine sims for row of current film from user_profile, sort them
         similarity_vals = pd.Series(sim_matrix[idx]).sort_values(ascending=False)
         # Store the indices of the top 10 highest cosine sims
-        rec_indices = list(similarity_vals.iloc[1:11].index)
-
-        # filter rec films here
-
+        rec_indices = list(similarity_vals.iloc[1:4].index)
         # Append the recommended films based on current film to our list
         recommended_films.append(metadata_df['title'].iloc[rec_indices])
 
+    # Filter long list of recs down to 15 HERE
+    recommended_films = filter_recs(metadata_df, user_profile_df, recommended_films)
+    print(recommended_films)
     # Return movie_id, title
     return recommended_films
+
+
+def filter_recs(df, up_df, recommended_films):
+    recs = []
+    count = {}
+    for row in recommended_films:
+        for film in row:
+            # Filter out films already seen recently from diary entries
+            if (up_df['title'] == film).any():
+                continue
+            # Filter out if TMDb vote count too low
+            if df.loc[df['title'] == film]['vote_count'].iloc[0] > 250 \
+                    and df.loc[df['title'] == film]['vote_average'].iloc[0] > 6.0:
+                # Add movie_id
+                m_id = df.loc[df['title'] == film]['movie_id'].iloc[0]
+                recs.append({'movie_id': m_id, 'title': film})
+                if m_id in count:
+                    count[m_id] += 1
+                else:
+                    count[m_id] = 1
+
+    print("Amount of Films: " + str(len(recs)))
+    # Add counts of frequency
+    for m in recs:
+        m['count'] = count[m['movie_id']]
+
+    # Remove duplicates in recs
+    result = []
+    for i in range(len(recs)):
+        if recs[i] not in recs[i+1:]:
+            result.append(recs[i])
+
+    # Sort by frequency count
+    result = sorted(result, key=lambda k: k['count'], reverse=True)
+
+    return result[:10]
+
 
 
 # Watchlist: Title, Year
@@ -207,5 +247,5 @@ if __name__ == '__main__':
     # Create Cosine Similarity Matrix between dataset metadata and user profile soups
     sim_matrix = make_sim_matrix(metadata_df['soup'], user_profile_df['soup'])
     # Get recommendations for films in diary df
-    print(get_recs(metadata_df, user_profile_df, sim_matrix))
+    get_recs(metadata_df, user_profile_df, sim_matrix)
 

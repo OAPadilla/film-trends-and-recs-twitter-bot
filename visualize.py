@@ -1,3 +1,4 @@
+import os
 import datetime
 import re
 import numpy as np
@@ -7,6 +8,8 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import seaborn as sns
 
+
+IMAGE_DIR = os.path.join(os.path.dirname(__file__), 'images', 'temp_visual.png')
 
 params = {'axes.titlesize': 22,
           'legend.fontsize': 16,
@@ -68,11 +71,14 @@ def generate_pop_film_chart(data):
     plt.gca().spines["bottom"].set_alpha(.0)
     plt.gca().spines["right"].set_alpha(.0)
     plt.gca().spines["left"].set_alpha(.0)
-    plt.show()
+    # plt.show()
+    fig.savefig(IMAGE_DIR)
 
 
-def generate_rec_chart():
-    pass
+def generate_rec_chart(data):
+
+    rec_df = pd.DataFrame(data, columns=['Movie_ID', 'Title'])
+
 
 if __name__ == '__main__':
     data1 = [
@@ -113,5 +119,24 @@ if __name__ == '__main__':
             (3, 'Aquaman', '2018', 55935, 14966, '2019-02-01', 7),
             (7, 'Vice', '2018', 20506, 3998, '2019-02-01', 8)
             ]
+
+    data3 = [
+        ('m_id', 'title'),
+        (1, 'Spider-Man: Into the Spider-Verse'),
+        (2, 'The Favourite'),
+        (3, 'Bird Box'),
+        (4, 'Black Mirror: Bandersnatch'),
+        (5, 'Roma'),
+        (6, 'If Beale Street Could Talk'),
+        (7, 'Aquaman'),
+        (8, 'Vice'),
+        (9, 'Vice'),
+        (10, 'Vice'),
+        (11, 'Vice'),
+        (12, 'Vice'),
+        (13, 'Vice'),
+        (14, 'Vice'),
+        (15, 'Vice')
+    ]
 
     generate_pop_film_chart(data1)

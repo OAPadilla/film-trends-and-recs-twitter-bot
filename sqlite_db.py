@@ -43,9 +43,10 @@ def db_select_prev_rank(conn, task):
              ORDER BY date DESC'''
     c = conn.cursor()
     c.execute(sql, task)
-    if c.fetchone() is None:
+    f = c.fetchone()
+    if f is None:
         return 0
-    prev_rank = c.fetchone()[0]
+    prev_rank = f[0]
     return prev_rank
 
 

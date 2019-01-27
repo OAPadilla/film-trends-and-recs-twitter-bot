@@ -1,3 +1,4 @@
+import time
 import tweepy
 from secrets import *
 from sqlite_db import *
@@ -47,6 +48,7 @@ def tweet_weekly_pop_films():
     visualize_pop_films()
     # Tweet out
     print("Tweeting...")
+    api.update_with_media(filename=IMAGE_DIR)
 
 
 if __name__ == '__main__':
@@ -57,10 +59,10 @@ if __name__ == '__main__':
 
     user = api.me()
     print(user.name)
-    #api.update_status('test')
 
-    #tweet_weekly_pop_films()
+    # tweet_weekly_pop_films()
 
-    visualize_pop_films()
+
+
 
 
