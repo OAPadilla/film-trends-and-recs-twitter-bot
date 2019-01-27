@@ -51,6 +51,18 @@ def tweet_weekly_pop_films():
     api.update_with_media(filename=IMAGE_DIR)
 
 
+# Tweet Replies with Recommended Films
+def tweet_recommended_films():
+    # Read username of comment
+    # Create user profile
+    # Make user word soup
+    # Find similarity matrix
+    # Get recs
+    # Visualize recs
+    # Tweet reply image and message
+    pass
+
+
 if __name__ == '__main__':
 
     auth = tweepy.OAuthHandler(C_KEY, C_SECRET)

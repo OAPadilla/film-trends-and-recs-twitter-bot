@@ -7,6 +7,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import seaborn as sns
+import squarify
 
 
 IMAGE_DIR = os.path.join(os.path.dirname(__file__), 'images', 'temp_visual.png')
@@ -79,7 +80,19 @@ def generate_rec_chart(data):
 
     rec_df = pd.DataFrame(data, columns=['Movie_id', 'Title', 'Count'])
 
-    print(rec_df)
+    # Data
+    num_films_display = 5
+    labels = [rec_df['Title'][x] for x in range(num_films_display)]
+    sizes = rec_df['Count'].values.tolist()[:num_films_display]
+    colors = ["#b2d8d8", "#66b2b2", "#008080", "#006666", "#004c4c"]
+
+    # Plot
+    squarify.plot(sizes=sizes, label=labels, color=colors, alpha=.8)
+
+    # Borders and display
+    plt.title("Recommended Films")
+    plt.axis('off')
+    plt.show()
 
 
 if __name__ == '__main__':

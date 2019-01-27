@@ -3,9 +3,7 @@
 
 import os
 import time
-import collections
 import pandas as pd
-from collections import Counter
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 from ast import literal_eval
@@ -88,6 +86,7 @@ def create_user_profile(diary):
 def condense_terms(block):
     """
     Removes spaces and coverts characters in a array or string to lower case
+    :return: String, or List of Strings
     """
     if isinstance(block, str):
         return str.lower(block.replace(" ", ""))
@@ -99,7 +98,7 @@ def condense_terms(block):
 def make_soup(df):
     """
     Creates word soup of all the relevant metadata of a dataframe
-    :return:
+    :return: String
     """
     # Condenses metadata terms, lowercase and no spaces
     tmp_df = df.copy()
@@ -113,7 +112,7 @@ def make_sim_matrix(df1_soup, df2_soup):
     """
     Cosine similarity, a measure of similarity between two vectors, is used to create a
     similarity matrix between films vectorized with the metadata word soup.
-    :return:
+    :return: List of Lists of Decimal Floats
     """
     # Frequency counter matrices
     count = CountVectorizer()
@@ -126,9 +125,13 @@ def make_sim_matrix(df1_soup, df2_soup):
 
 
 def get_recs(metadata_df, user_profile_df, sim_matrix):
+    """
+    Finds list of films to recommend using cosine similarities of the metadata for each film
+    :return: List of Dictionaries
+    """
     recommended_films = []
 
-    md_indices = pd.Series(metadata_df.index, index=metadata_df['title'])
+    # md_indices = pd.Series(metadata_df.index, index=metadata_df['title'])
     up_indices = pd.Series(user_profile_df.index, index=user_profile_df['title'])
 
     for film in user_profile_df['title']:
@@ -148,6 +151,10 @@ def get_recs(metadata_df, user_profile_df, sim_matrix):
 
 
 def filter_recs(df, up_df, recommended_films):
+    """
+    Filters recommended films from hundreds to the top 10
+    :return: List of Dictionaries
+    """
     recs = []
     count = {}
     for row in recommended_films:
@@ -182,10 +189,6 @@ def filter_recs(df, up_df, recommended_films):
 
     return result[:10]
 
-
-
-# Watchlist: Title, Year
-# TMDb / MovieLens get genre, avg rating, actors, directors, producers of watchlist entries
 
 if __name__ == '__main__':
     diary = [{'title': 'Vice', 'year': '2018', 'rating': '6'}, {'title': 'Magnolia', 'year': '1999', 'rating': '10'},
