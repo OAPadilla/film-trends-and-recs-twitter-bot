@@ -77,7 +77,9 @@ def generate_pop_film_chart(data):
 
 def generate_rec_chart(data):
 
-    rec_df = pd.DataFrame(data, columns=['Movie_ID', 'Title'])
+    rec_df = pd.DataFrame(data, columns=['Movie_id', 'Title', 'Count'])
+
+    print(rec_df)
 
 
 if __name__ == '__main__':
@@ -92,51 +94,18 @@ if __name__ == '__main__':
         (8, 'Vice', '2018', 20506, 3998, '2019-01-25', 5),
     ]
 
-    data2 = [(3, 'Spider-Man: Into the Spider-Verse', '2018', 85603, 45177, '2019-01-18', 0),
-            (2, 'The Favourite', '2018', 51138, 19661, '2019-01-18', 0),
-            (1, 'Bird Box', '2018', 92460, 16528, '2019-01-18', 0),
-            (8, 'Black Mirror: Bandersnatch', '2018', 72181, 16726, '2019-01-18', 0),
-            (6, 'Roma', '2018', 65460, 25511, '2019-01-18', 6),
-            (7, 'If Beale Street Could Talk', '2018', 15733, 5987, '2019-01-18', 0),
-            (4, 'Aquaman', '2018', 55935, 14966, '2019-01-18', 0),
-            (5, 'Vice', '2018', 20506, 3998, '2019-01-18', 0),
-
-            (1, 'Spider-Man: Into the Spider-Verse', '2018', 85603, 45177, '2019-01-25', 3),
-            (2, 'The Favourite', '2018', 51138, 19661, '2019-01-25', 2),
-            (3, 'Bird Box', '2018', 92460, 16528, '2019-01-25', 1),
-            (4, 'Black Mirror: Bandersnatch', '2018', 72181, 16726, '2019-01-25', 8),
-            (5, 'Roma', '2018', 65460, 25511, '2019-01-25', 6),
-            (6, 'If Beale Street Could Talk', '2018', 15733, 5987, '2019-01-25', 7),
-            (7, 'Aquaman', '2018', 55935, 14966, '2019-01-25', 4),
-            (8, 'Vice', '2018', 20506, 3998, '2019-01-25', 5),
-
-            (2, 'Spider-Man: Into the Spider-Verse', '2018', 85603, 45177, '2019-02-01', 1),
-            (1, 'The Favourite', '2018', 51138, 19661, '2019-02-01', 2),
-            (8, 'Bird Box', '2018', 92460, 16528, '2019-02-01', 3),
-            (4, 'Black Mirror: Bandersnatch', '2018', 72181, 16726, '2019-02-01', 4),
-            (6, 'Roma', '2018', 65460, 25511, '2019-02-01', 5),
-            (5, 'If Beale Street Could Talk', '2018', 15733, 5987, '2019-02-01', 6),
-            (3, 'Aquaman', '2018', 55935, 14966, '2019-02-01', 7),
-            (7, 'Vice', '2018', 20506, 3998, '2019-02-01', 8)
-            ]
-
-    data3 = [
-        ('m_id', 'title'),
-        (1, 'Spider-Man: Into the Spider-Verse'),
-        (2, 'The Favourite'),
-        (3, 'Bird Box'),
-        (4, 'Black Mirror: Bandersnatch'),
-        (5, 'Roma'),
-        (6, 'If Beale Street Could Talk'),
-        (7, 'Aquaman'),
-        (8, 'Vice'),
-        (9, 'Vice'),
-        (10, 'Vice'),
-        (11, 'Vice'),
-        (12, 'Vice'),
-        (13, 'Vice'),
-        (14, 'Vice'),
-        (15, 'Vice')
+    data2 = [
+        (4347, 'Atonement', 16),
+        (4995, 'Boogie Nights', 3),
+        (49047, 'Gravity', 2),
+        (8051, 'Punch-Drunk Love', 1),
+        (1391, 'Y Tu Mamá También', 1),
+        (103731, 'Mud', 1),
+        (12573, 'A Serious Man', 1),
+        (44264, 'True Grit', 1),
+        (75, 'Mars Attacks!', 1),
+        (473, 'Pi', 1)
     ]
 
-    generate_pop_film_chart(data1)
+    # generate_pop_film_chart(data1)
+    generate_rec_chart(data2)

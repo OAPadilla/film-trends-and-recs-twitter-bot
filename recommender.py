@@ -143,7 +143,6 @@ def get_recs(metadata_df, user_profile_df, sim_matrix):
 
     # Filter long list of recs down to 15 HERE
     recommended_films = filter_recs(metadata_df, user_profile_df, recommended_films)
-    print(recommended_films)
     # Return movie_id, title
     return recommended_films
 
