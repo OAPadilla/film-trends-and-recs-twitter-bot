@@ -48,7 +48,7 @@ def tweet_weekly_pop_films():
     visualize_pop_films()
     # Tweet out
     print("Tweeting...")
-    api.update_with_media(filename=IMAGE_DIR)
+    api.update_with_media(filename=POP_IMAGE_DIR)
 
 
 # Tweet Replies with Recommended Films

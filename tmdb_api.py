@@ -16,6 +16,7 @@ class TheMovieDatabaseAPI:
     URL_SEARCH = 'https://api.themoviedb.org/3/search/movie?api_key={}&query={}'
     URL_CREDITS = 'https://api.themoviedb.org/3/movie/{}/credits?api_key='
     URL_DETAILS = 'https://api.themoviedb.org/3/movie/{}?api_key='
+    URL_IMAGE = 'https://image.tmdb.org/t/p/w200'
 
     def __init__(self, key):
         self.api_key = key
@@ -76,6 +77,7 @@ class TheMovieDatabaseAPI:
         url = self.URL_DETAILS.format(movie_id) + self.api_key
         res = requests.get(url).json()
 
+        # For metadata analysis
         genres = [g['name'] for g in res['genres']]
         production_co = [p['name'] for p in res['production_companies']]
         average_rating = res['vote_average']
@@ -83,8 +85,24 @@ class TheMovieDatabaseAPI:
         details.append({'genres': genres, 'production_companies': production_co, 'vote_average': average_rating})
         return details
 
-    def get_film_image(self, film):
-        pass
+    def download_movie_poster(self, m_id, directory):
+
+        # Get poster path from movie details request
+        url = self.URL_DETAILS.format(m_id) + self.api_key
+        res = requests.get(url).json()
+        path = res['poster_path']
+
+        full_url = self.URL_IMAGE + path
+
+        # Download url image to /images
+        img_request = requests.get(full_url)
+        with open(directory, 'wb') as f:
+            f.write(img_request.content)
+
+    def get_release_year(self, m_id):
+        year = 0
+
+        return year
 
 
 if __name__ == '__main__':

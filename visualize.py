@@ -8,9 +8,11 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import seaborn as sns
 import squarify
+from tmdb_api import TheMovieDatabaseAPI
+from secrets import *
 
 
-IMAGE_DIR = os.path.join(os.path.dirname(__file__), 'images', 'temp_visual.png')
+POP_IMAGE_DIR = os.path.join(os.path.dirname(__file__), 'images', 'temp_visual.png')
 
 params = {'axes.titlesize': 22,
           'legend.fontsize': 16,
@@ -73,12 +75,22 @@ def generate_pop_film_chart(data):
     plt.gca().spines["right"].set_alpha(.0)
     plt.gca().spines["left"].set_alpha(.0)
     # plt.show()
-    fig.savefig(IMAGE_DIR)
+    fig.savefig(POP_IMAGE_DIR)
 
 
 def generate_rec_chart(data):
+    # Need image url and year of films
 
-    rec_df = pd.DataFrame(data, columns=['Movie_id', 'Title', 'Count'])
+    rec_df = pd.DataFrame(data, columns=['Movie_id', 'Title', 'Date', 'Count'])
+
+    # Download movie posters
+    m = TheMovieDatabaseAPI(TMDB_API_KEY)
+    for idx, m_id in enumerate(rec_df['Movie_id'], start=1):
+        filename = "poster_top{}.png".format(str(idx))
+        directory = os.path.join(os.path.dirname(__file__), 'images', filename)
+        m.download_movie_poster(m_id, directory)
+
+    # Use posters in plot
 
     # Data
     num_films_display = 5
@@ -89,10 +101,12 @@ def generate_rec_chart(data):
     # Plot
     squarify.plot(sizes=sizes, label=labels, color=colors, alpha=.8)
 
+    # Add text of top 10
+
     # Borders and display
     plt.title("Recommended Films")
     plt.axis('off')
-    plt.show()
+    # plt.show()
 
 
 if __name__ == '__main__':
@@ -108,16 +122,16 @@ if __name__ == '__main__':
     ]
 
     data2 = [
-        (4347, 'Atonement', 16),
-        (4995, 'Boogie Nights', 3),
-        (49047, 'Gravity', 2),
-        (8051, 'Punch-Drunk Love', 1),
-        (1391, 'Y Tu Mamá También', 1),
-        (103731, 'Mud', 1),
-        (12573, 'A Serious Man', 1),
-        (44264, 'True Grit', 1),
-        (75, 'Mars Attacks!', 1),
-        (473, 'Pi', 1)
+        (4347, 'Atonement', "1998-07-10", 16),
+        (4995, 'Boogie Nights', "1998-07-10", 3),
+        (49047, 'Gravity', "1998-07-10", 2),
+        (8051, 'Punch-Drunk Love', "1998-07-10", 1),
+        (1391, 'Y Tu Mamá También', "1998-07-10", 1),
+        (103731, 'Mud', "1998-07-10", 1),
+        (12573, 'A Serious Man', "1998-07-10", 1),
+        (44264, 'True Grit', "1998-07-10", 1),
+        (75, 'Mars Attacks!', "1998-07-10", 1),
+        (473, 'Pi', "1998-07-10", 1)
     ]
 
     # generate_pop_film_chart(data1)
