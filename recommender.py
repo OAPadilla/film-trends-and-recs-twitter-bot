@@ -30,7 +30,7 @@ def create_metadata_dataframe():
     metadata = pd.merge(movies_metadata, credits_metadata, on='title')
 
     metadata_df = metadata[['movie_id', 'title', 'genres', 'production_companies',
-                            'cast', 'crew', 'vote_average', 'vote_count']]
+                            'cast', 'crew', 'vote_average', 'vote_count', 'release_date']]
 
     # Clean up genre metadata
     metadata_df['genres'] = metadata_df['genres'].fillna('[]').apply(literal_eval) \
@@ -146,7 +146,7 @@ def get_recs(metadata_df, user_profile_df, sim_matrix):
 
     # Filter long list of recs down to 15 HERE
     recommended_films = filter_recs(metadata_df, user_profile_df, recommended_films)
-    # Return movie_id, title
+    # Return movie_id, title, release_date, count
     return recommended_films
 
 
@@ -167,7 +167,9 @@ def filter_recs(df, up_df, recommended_films):
                     and df.loc[df['title'] == film]['vote_average'].iloc[0] > 6.0:
                 # Add movie_id
                 m_id = df.loc[df['title'] == film]['movie_id'].iloc[0]
-                recs.append({'movie_id': m_id, 'title': film})
+                # Add release_date
+                r_date = df.loc[df['title'] == film]['release_date'].iloc[0]
+                recs.append({'movie_id': m_id, 'title': film, 'release_date': r_date})
                 if m_id in count:
                     count[m_id] += 1
                 else:
@@ -186,7 +188,7 @@ def filter_recs(df, up_df, recommended_films):
 
     # Sort by frequency count
     result = sorted(result, key=lambda k: k['count'], reverse=True)
-
+    # result = [{'movie_id', 'title', 'release_date', 'count'}]
     return result[:10]
 
 

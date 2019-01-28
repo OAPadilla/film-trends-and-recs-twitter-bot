@@ -12,7 +12,8 @@ from tmdb_api import TheMovieDatabaseAPI
 from secrets import *
 
 
-POP_IMAGE_DIR = os.path.join(os.path.dirname(__file__), 'images', 'temp_visual.png')
+POP_IMAGE_DIR = os.path.join(os.path.dirname(__file__), 'images', 'temp_pop.png')
+RECS_IMAGE_DIR = os.path.join(os.path.dirname(__file__), 'images', 'temp_recs.png')
 
 params = {'axes.titlesize': 22,
           'legend.fontsize': 16,
@@ -79,34 +80,35 @@ def generate_pop_film_chart(data):
 
 
 def generate_rec_chart(data):
-    # Need image url and year of films
 
     rec_df = pd.DataFrame(data, columns=['Movie_id', 'Title', 'Date', 'Count'])
 
     # Download movie posters
-    m = TheMovieDatabaseAPI(TMDB_API_KEY)
-    for idx, m_id in enumerate(rec_df['Movie_id'], start=1):
-        filename = "poster_top{}.png".format(str(idx))
-        directory = os.path.join(os.path.dirname(__file__), 'images', filename)
-        m.download_movie_poster(m_id, directory)
+    # m = TheMovieDatabaseAPI(TMDB_API_KEY)
+    # for idx, m_id in enumerate(rec_df['Movie_id'], start=1):
+    #     filename = "poster_top{}.png".format(str(idx))
+    #     directory = os.path.join(os.path.dirname(__file__), 'images', filename)
+    #     m.download_movie_poster(m_id, directory)
 
     # Use posters in plot
 
-    # Data
-    num_films_display = 5
-    labels = [rec_df['Title'][x] for x in range(num_films_display)]
+    # Prepare data
+    num_films_display = 10
+    years = ['(' + rec_df['Date'][x][:4] + ')' for x in range(num_films_display)]
+    labels = [(rec_df['Title'][x] + '\n' + years[x]) for x in range(num_films_display)]
     sizes = rec_df['Count'].values.tolist()[:num_films_display]
-    colors = ["#b2d8d8", "#66b2b2", "#008080", "#006666", "#004c4c"]
+    colors = ["#90aeae", "#a0c2c2", "#a9c8c8", "#b3cece", "#bcd4d4",
+              "#c6dada", "#cfe0e0", "#d9e6e6", "#e2ecec", "#ecf2f2"]
 
     # Plot
-    squarify.plot(sizes=sizes, label=labels, color=colors, alpha=.8)
-
-    # Add text of top 10
+    plt.figure(figsize=(12, 8), dpi=80)
+    plt.figure = squarify.plot(sizes=sizes, label=labels, color=colors, alpha=.8)
 
     # Borders and display
     plt.title("Recommended Films")
     plt.axis('off')
     # plt.show()
+    plt.savefig(RECS_IMAGE_DIR)
 
 
 if __name__ == '__main__':

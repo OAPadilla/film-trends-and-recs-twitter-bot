@@ -4,6 +4,7 @@
 
 import requests
 import time
+import wget
 from secrets import *
 
 __author__ = "Oscar Antonio Padilla"
@@ -94,15 +95,8 @@ class TheMovieDatabaseAPI:
 
         full_url = self.URL_IMAGE + path
 
-        # Download url image to /images
-        img_request = requests.get(full_url)
-        with open(directory, 'wb') as f:
-            f.write(img_request.content)
-
-    def get_release_year(self, m_id):
-        year = 0
-
-        return year
+        # Download url image to /images directory
+        wget.download(full_url, out=directory)
 
 
 if __name__ == '__main__':
