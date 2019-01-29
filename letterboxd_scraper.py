@@ -28,7 +28,7 @@ class LetterboxdScraper:
         """
         Starts the web browser/driver in icognito mode.
         """
-        print('Starting driver...')
+        print('Starting web driver...')
         options = webdriver.ChromeOptions()
         options.add_argument("--headless")
         options.add_argument("--incognito")

@@ -108,16 +108,18 @@ def make_soup(df):
     return ' '.join(soup)
 
 
-def make_sim_matrix(df1_soup, df2_soup):
+def make_sim_matrix(md_soup, up_soup):
     """
     Cosine similarity, a measure of similarity between two vectors, is used to create a
     similarity matrix between films vectorized with the metadata word soup.
     :return: List of Lists of Decimal Floats
     """
     # Frequency counter matrices
-    count = CountVectorizer()
-    matrix1 = count.fit_transform(df1_soup)
-    matrix2 = count.transform(df2_soup)
+    count = CountVectorizer(stop_words=None)
+    # md_soup = [md_soup]
+    # up_soup = [up_soup]
+    matrix1 = count.fit_transform(md_soup)
+    matrix2 = count.transform(up_soup)
     # Cosine similarity matrix
     similarity_matrix = cosine_similarity(matrix2, matrix1)
 
@@ -129,6 +131,7 @@ def get_recs(metadata_df, user_profile_df, sim_matrix):
     Finds list of films to recommend using cosine similarities of the metadata for each film
     :return: List of Dictionaries
     """
+    print("Calculating recommendations...")
     recommended_films = []
 
     # md_indices = pd.Series(metadata_df.index, index=metadata_df['title'])
@@ -175,7 +178,6 @@ def filter_recs(df, up_df, recommended_films):
                 else:
                     count[m_id] = 1
 
-    print("Amount of Films: " + str(len(recs)))
     # Add counts of frequency
     for m in recs:
         m['count'] = count[m['movie_id']]
