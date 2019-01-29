@@ -3,8 +3,8 @@
 """tmdb_api.py: Makes HTTP GET requests for movie information to The Movie Database API"""
 
 import requests
-import time
 import wget
+
 from secrets import *
 
 __author__ = "Oscar Antonio Padilla"

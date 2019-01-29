@@ -7,15 +7,15 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 from ast import literal_eval
+import warnings
+
 from tmdb_api import *
 from secrets import *
 
-import warnings
 warnings.simplefilter('ignore')
 
-# Content-based items: genres, keywords, production_companies, title, vote_average, vote_count
+# Content-based items from TMDb dataset
 DATASET_MOVIES = os.path.join(os.path.dirname(__file__), 'datasets', 'tmdb', 'tmdb_5000_movies.csv')
-# Content-based items: title, cast, crew
 DATASET_CREDIT = os.path.join(os.path.dirname(__file__), 'datasets', 'tmdb', 'tmdb_5000_credits.csv')
 
 

@@ -1,9 +1,19 @@
+#!/usr/bin/env python3
+
+"""twitter_bot.py: Tweets Letterboxd's weekly popular films and recommends based on a user's profile"""
+
 import time
 import tweepy
+import schedule
+
 from secrets import *
 from sqlite_db import *
 from letterboxd_scraper import *
 from visualize import *
+
+__author__ = "Oscar Antonio Padilla"
+__email__ = "PadillaOscarA@gmail.com"
+__status__ = "Development"
 
 
 # Once a week, call scraper to scrape top 8 movies of the week
@@ -48,18 +58,22 @@ def tweet_weekly_pop_films():
     visualize_pop_films()
     # Tweet out
     print("Tweeting...")
-    api.update_with_media(filename=POP_IMAGE_DIR)
+    status = api.update_with_media(filename=POP_IMAGE_DIR)
+    print(status.id)
 
 
 # Tweet Replies with Recommended Films
 def tweet_recommended_films():
     # Read username of comment
+
     # Create user profile
     # Make user word soup
     # Find similarity matrix
     # Get recs
     # Visualize recs
     # Tweet reply image and message
+    # status = api.update_with_media(filename=RECS_IMAGE_DIR, status='@<username>', tweetId)
+    # print(status.id)
     pass
 
 
@@ -70,11 +84,14 @@ if __name__ == '__main__':
     api = tweepy.API(auth)
 
     user = api.me()
-    print(user.name)
+    print(user.name + " is online.")
 
-    # tweet_weekly_pop_films()
+    # Tweet Weekly Popular Films on Letterboxd every Saturday, 5 PM
+    schedule.every().day.saturday("17:00").do(tweet_weekly_pop_films)
 
+    # Reply tweet anytime @LetterBotFilm called
+    # tweet_recommended_films()
 
-
-
-
+    while True:
+        schedule.run_pending()
+        time.sleep(1)

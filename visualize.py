@@ -1,12 +1,11 @@
 import os
 import datetime
 import re
-import numpy as np
 import pandas as pd
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import seaborn as sns
+
 import squarify
 from tmdb_api import TheMovieDatabaseAPI
 from secrets import *
@@ -137,4 +136,4 @@ if __name__ == '__main__':
     ]
 
     # generate_pop_film_chart(data1)
-    generate_rec_chart(data2)
+    # generate_rec_chart(data2)
