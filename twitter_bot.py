@@ -133,9 +133,7 @@ def tweet_recommended_films(screen_name, status_id, letterboxd_name):
     # Read username of comment: Stream Listener does this
 
     # Scrape letterboxd diary
-    # diary = scrape_letterboxd_diary(letterboxd_name)
-    # print(diary)
-    diary = [{'title': 'Vice', 'year': '2018', 'rating': '6'}, {'title': 'Magnolia', 'year': '1999', 'rating': '10'}, {'title': 'Roma', 'year': '2018', 'rating': '9'}, {'title': 'Children of Men', 'year': '2006', 'rating': '9'}, {'title': 'Black Mirror: Bandersnatch', 'year': '2018', 'rating': '5'}, {'title': 'Take Shelter', 'year': '2011', 'rating': '7'}, {'title': 'The Ballad of Buster Scruggs', 'year': '2018', 'rating': '7'}, {'title': 'Incredibles 2', 'year': '2018', 'rating': '6'}, {'title': 'Force Majeure', 'year': '2014', 'rating': '7'}, {'title': 'Sorry to Bother You', 'year': '2018', 'rating': '8'}, {'title': 'BlacKkKlansman', 'year': '2018', 'rating': '6'}, {'title': 'Hereditary', 'year': '2018', 'rating': '8'}, {'title': 'It Follows', 'year': '2014', 'rating': '7'}, {'title': 'Black Swan', 'year': '2010', 'rating': '9'}, {'title': 'Mandy', 'year': '2018', 'rating': '7'}, {'title': 'It', 'year': '2017', 'rating': '6'}, {'title': 'What We Do in the Shadows', 'year': '2014', 'rating': '8'}, {'title': 'Mamma Mia! Here We Go Again', 'year': '2018', 'rating': '4'}, {'title': 'Isle of Dogs', 'year': '2018', 'rating': '7'}, {'title': 'Thoroughbreds', 'year': '2017', 'rating': '7'}, {'title': 'The Disaster Artist', 'year': '2017', 'rating': '6'}, {'title': 'Solaris', 'year': '1972', 'rating': '0'}, {'title': 'Fallen Angels', 'year': '1995', 'rating': '8'}, {'title': 'The Master', 'year': '2012', 'rating': '7'}, {'title': 'Suspiria', 'year': '1977', 'rating': '9'}, {'title': 'Welcome to Leith', 'year': '2015', 'rating': '6'}, {'title': 'Death Note', 'year': '2017', 'rating': '3'}, {'title': 'There Will Be Blood', 'year': '2007', 'rating': '10'}, {'title': 'Cube 2: Hypercube', 'year': '2002', 'rating': '2'}, {'title': 'Cube', 'year': '1997', 'rating': '4'}, {'title': "One Flew Over the Cuckoo's Nest", 'year': '1975', 'rating': '9'}, {'title': 'Mulholland Drive', 'year': '2001', 'rating': '0'}, {'title': 'Star Wars: The Last Jedi', 'year': '2017', 'rating': '5'}, {'title': 'Coherence', 'year': '2013', 'rating': '6'}, {'title': 'Avengers: Infinity War', 'year': '2018', 'rating': '7'}, {'title': 'The One I Love', 'year': '2014', 'rating': '7'}, {'title': 'Annihilation', 'year': '2018', 'rating': '7'}, {'title': "The Devil's Backbone", 'year': '2001', 'rating': '9'}, {'title': 'Coco', 'year': '2017', 'rating': '7'}, {'title': 'Office Space', 'year': '1999', 'rating': '8'}, {'title': 'The Cloverfield Paradox', 'year': '2018', 'rating': '3'}, {'title': 'Good Time', 'year': '2017', 'rating': '8'}, {'title': 'The Shape of Water', 'year': '2017', 'rating': '8'}, {'title': 'Three Billboards Outside Ebbing, Missouri', 'year': '2017', 'rating': '7'}, {'title': 'The Killing of a Sacred Deer', 'year': '2017', 'rating': '7'}, {'title': 'The Death of Stalin', 'year': '2017', 'rating': '7'}, {'title': 'The Florida Project', 'year': '2017', 'rating': '9'}, {'title': 'Once', 'year': '2007', 'rating': '7'}, {'title': 'Blade Runner 2049', 'year': '2017', 'rating': '10'}, {'title': 'Blade Runner', 'year': '1982', 'rating': '9'}]
+    diary = scrape_letterboxd_diary(letterboxd_name)
     # Create user profile and TMDb dataset metadata dataframes
     print("Creating user profile and TMDb dataset dataframes...")
     md = create_metadata_dataframe()
@@ -147,9 +145,10 @@ def tweet_recommended_films(screen_name, status_id, letterboxd_name):
     sim_matrix = make_sim_matrix(md['soup'], up['soup'])
     # Get recs
     rec_films = get_recs(md, up, sim_matrix)
+    print(rec_films)
     # Visualize recs, saves image locally
     visualize_recomendations(rec_films)
-    # Tweet replies message with image
+    # Tweet reply message with image
     print("Tweeting recommendations to... @{} (Letterboxd: {})".format(screen_name, letterboxd_name))
     status = api.update_with_media(filename=RECS_IMAGE_DIR, status="@" + screen_name, in_reply_to_status_id=status_id)
     print(status.id)

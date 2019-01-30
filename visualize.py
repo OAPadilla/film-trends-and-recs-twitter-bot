@@ -78,6 +78,11 @@ def generate_pop_film_chart(data):
     fig.savefig(POP_IMAGE_DIR)
 
 
+def generate_recommended_chart(data):
+
+    pop_df = pd.DataFrame(data, columns=['Rank', 'Title', 'Year', 'Watches', 'Likes', 'Date', 'Previous Rank'])
+
+
 def generate_rec_chart(data):
 
     rec_df = pd.DataFrame(data, columns=['Movie_id', 'Title', 'Date', 'Count'])
@@ -101,12 +106,13 @@ def generate_rec_chart(data):
 
     # Plot
     plt.figure(figsize=(12, 8), dpi=80)
-    plt.figure = squarify.plot(sizes=sizes, label=labels, color=colors, alpha=.8)
+    squarify.plot(sizes=sizes, label=labels, color=colors, alpha=.8)
 
     # Borders and display
-    plt.title("Recommended Films")
+    plt.title("Recommended Films", size=32)
+    plt.rc('font', size=18)
     plt.axis('off')
-    # plt.show()
+    plt.show()
     plt.savefig(RECS_IMAGE_DIR)
 
 

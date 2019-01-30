@@ -34,6 +34,8 @@ class TheMovieDatabaseAPI:
         res = r.json()
 
         if r.status_code == 200:
+            if res['total_results'] == 0:
+                return None
             # Default movie_id is first result
             m_id = res['results'][0]['id']
 
@@ -74,6 +76,9 @@ class TheMovieDatabaseAPI:
 
         if movie_id is None:
             movie_id = self.get_movie_id(title, year)
+
+        if movie_id is None:
+            return None
 
         url = self.URL_DETAILS.format(movie_id) + self.api_key
         res = requests.get(url).json()

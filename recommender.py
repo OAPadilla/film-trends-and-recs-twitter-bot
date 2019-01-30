@@ -54,7 +54,7 @@ def create_metadata_dataframe():
     return metadata_df
 
 
-def create_user_profile(diary):
+def create_user_profile(d):
     """
     Prepares a dataframe from the user's Letterboxd diary metadata
     diary = [{title, year, rating, details: [{genres, production_companies, vote_average}],
@@ -62,10 +62,21 @@ def create_user_profile(diary):
     :return: DataFrane
     """
     m = TheMovieDatabaseAPI(TMDB_API_KEY)
+
+    # Delete duplicates based on 'title'
+    diary = []
+    titles = []
+    for entry in d:
+        if entry['title'] not in titles:
+            diary.append(entry)
+            titles.append(entry['title'])
+
     for entry in diary:
-        if int(entry['rating']) >= 7:
+        if int(entry['rating']) >= 6:
             # GET API request to TMDb API for movie details of entry
             d = m.get_movie_details(entry['title'], entry['year'], None)
+            if d is None:
+                continue
             entry['genres'] = d[0]['genres']
             entry['production_companies'] = d[0]['production_companies']
             entry['vote_average'] = d[0]['vote_average']
@@ -141,7 +152,9 @@ def get_recs(metadata_df, user_profile_df, sim_matrix):
         # Get index of film in user_profile row
         idx = up_indices[film]
         # Get cosine sims for row of current film from user_profile, sort them
+        # print(sim_matrix[idx])
         similarity_vals = pd.Series(sim_matrix[idx]).sort_values(ascending=False)
+        print(similarity_vals)
         # Store the indices of the top 10 highest cosine sims
         rec_indices = list(similarity_vals.iloc[1:4].index)
         # Append the recommended films based on current film to our list
@@ -160,14 +173,15 @@ def filter_recs(df, up_df, recommended_films):
     """
     recs = []
     count = {}
+    print(recommended_films)
     for row in recommended_films:
         for film in row:
             # Filter out films already seen recently from diary entries
             if (up_df['title'] == film).any():
                 continue
             # Filter out if TMDb vote count too low
-            if df.loc[df['title'] == film]['vote_count'].iloc[0] > 250 \
-                    and df.loc[df['title'] == film]['vote_average'].iloc[0] > 6.0:
+            if df.loc[df['title'] == film]['vote_count'].iloc[0] > 150 \
+                    and df.loc[df['title'] == film]['vote_average'].iloc[0] > 5.5:
                 # Add movie_id
                 m_id = df.loc[df['title'] == film]['movie_id'].iloc[0]
                 # Add release_date
@@ -187,6 +201,9 @@ def filter_recs(df, up_df, recommended_films):
     for i in range(len(recs)):
         if recs[i] not in recs[i+1:]:
             result.append(recs[i])
+        # Bug - Remove film 'Atonement' due to consistant preference
+        # if recs[i]['title'] == 'Atonement':
+        #     del recs[i]
 
     # Sort by frequency count
     result = sorted(result, key=lambda k: k['count'], reverse=True)
