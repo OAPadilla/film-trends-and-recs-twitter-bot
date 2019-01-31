@@ -1,12 +1,23 @@
+#!/usr/bin/env python3
+
+"""sqlite_db.py: SQLite database connection and SQL commands."""
+
 import os
 import sqlite3
 from sqlite3 import Error
+
+__author__ = "Oscar Antonio Padilla"
+__email__ = "PadillaOscarA@gmail.com"
+__status__ = "Development"
+
 
 DATABASE = os.path.join(os.path.dirname(__file__), 'database.sqlite3')
 
 
 def connect_db():
-    # Connecting to the database file
+    """
+    Connects to database
+    """
     try:
         conn = sqlite3.connect(DATABASE)
         return conn
@@ -15,6 +26,9 @@ def connect_db():
 
 
 def db_create_table(conn, sql):
+    """
+    Creates a database table with provided SQL
+    """
     try:
         c = conn.cursor()
         c.execute(sql)
@@ -23,6 +37,9 @@ def db_create_table(conn, sql):
 
 
 def db_insert_weekly_top(conn, task):
+    """
+    Inserts the weekly most popular films data into the popular_films table
+    """
     sql = '''INSERT INTO popular_films (rank, title, year, watches, likes, date)
              VALUES (?,?,?,?,?,CURRENT_DATE)'''
     c = conn.cursor()
@@ -32,6 +49,9 @@ def db_insert_weekly_top(conn, task):
 
 
 def db_select_weekly_top(conn):
+    """
+    Selects rows of the weekly most popular films data from the popular_films table
+    """
     c = conn.cursor()
     c.execute('''SELECT * FROM popular_films WHERE date = CURRENT_DATE''')
     rows = c.fetchall()
@@ -39,6 +59,9 @@ def db_select_weekly_top(conn):
 
 
 def db_select_prev_rank(conn, task):
+    """
+    Selects the previous rank attribute of a specific film on the popular_films table
+    """
     sql = '''SELECT rank FROM popular_films WHERE title = ? AND year = ? AND date != CURRENT_DATE
              ORDER BY date DESC'''
     c = conn.cursor()

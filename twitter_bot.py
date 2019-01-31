@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""twitter_bot.py: Tweets Letterboxd's weekly popular films and recommends based on a user's profile"""
+"""twitter_bot.py: Tweets Letterboxd's weekly popular films and recommends based on a user's profile."""
 
 import time
 import tweepy

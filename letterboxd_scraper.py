@@ -143,11 +143,11 @@ class LetterboxdScraper:
         return popular
 
 
-if __name__ == '__main__':
-    user = "narrowlightbulb"
-    lb = LetterboxdScraper()
-    lb.open_browser()
-    # print(lb.get_watchlist_films(user))
-    # print(lb.get_recent_diary_entries(user))
-    # print(lb.get_popular_films())
-    lb.close_browser()
+# if __name__ == '__main__':
+#     user = "example"
+#     lb = LetterboxdScraper()
+#     lb.open_browser()
+#     print(lb.get_watchlist_films(user))
+#     print(lb.get_recent_diary_entries(user))
+#     print(lb.get_popular_films())
+#     lb.close_browser()
