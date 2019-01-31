@@ -79,7 +79,7 @@ def generate_pop_film_chart(data):
 
 def generate_rec_chart(data):
 
-    rec_df = pd.DataFrame(data, columns=['Movie_id', 'Title', 'Date', 'Count'])
+    rec_df = pd.DataFrame(data, columns=['Movie_id', 'Title', 'Date'])
 
     # Download movie posters
     # m = TheMovieDatabaseAPI(TMDB_API_KEY)
@@ -95,7 +95,7 @@ def generate_rec_chart(data):
     # Year set
     year = []
     for film in data:
-        year.append(film[2][:4])
+        year.append(film[2][-4:])
     rec_df['Year'] = year
 
     fig, ax = plt.subplots(1, 1, figsize=(9, 7), dpi=80)

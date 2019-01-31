@@ -3,6 +3,7 @@
 
 import os
 import time
+import random
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
@@ -158,10 +159,9 @@ def get_recs(metadata_df, user_profile_df, sim_matrix):
         rec_indices = list(similarity_vals.iloc[1:4].index)
         # Append the recommended films based on current film to our list
         recommended_films.append(metadata_df['title'].iloc[rec_indices])
-    print(recommended_films)
-    # Filter long list of recs down to 15 HERE
+    # Filter long list of recs down to 10
     recommended_films = filter_recs(metadata_df, user_profile_df, recommended_films)
-    # Return movie_id, title, release_date, count
+    # Return movie_id, title, release_date
     return recommended_films
 
 
@@ -171,7 +171,6 @@ def filter_recs(df, up_df, recommended_films):
     :return: List of Dictionaries
     """
     recs = []
-    count = {}
 
     for row in recommended_films:
         for film in row:
@@ -186,26 +185,16 @@ def filter_recs(df, up_df, recommended_films):
                 # Add release_date
                 r_date = df.loc[df['title'] == film]['release_date'].iloc[0]
                 recs.append({'movie_id': m_id, 'title': film, 'release_date': r_date})
-                if m_id in count:
-                    count[m_id] += 1
-                else:
-                    count[m_id] = 1
-
-    # Add counts of frequency
-    for m in recs:
-        m['count'] = count[m['movie_id']]
 
     # Remove duplicates in recs
     result = []
     for i in range(len(recs)):
         if recs[i] not in recs[i+1:]:
             result.append(recs[i])
-        # Bug - Remove film 'Atonement' due to consistant preference
-        # if recs[i]['title'] == 'Atonement':
-        #     del recs[i]
 
-    # Sort by frequency count
-    result = sorted(result, key=lambda k: k['count'], reverse=True)
+    # Shuffle the recommended films
+    random.shuffle(result)
+
     # result = [{'movie_id', 'title', 'release_date', 'count'}]
     return result[:10]
 

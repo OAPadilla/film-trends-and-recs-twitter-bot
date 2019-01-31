@@ -104,7 +104,7 @@ def visualize_recomendations(films):
     print("Visualizing recommended films...")
     print(films)
     for f in range(len(films)):
-        films[f] = (films[f]['movie_id'], films[f]['title'], films[f]['release_date'], films[f]['count'])
+        films[f] = (films[f]['movie_id'], films[f]['title'], films[f]['release_date'])
     generate_rec_chart(films)
 
 
