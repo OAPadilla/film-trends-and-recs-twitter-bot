@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+
+"""visualize.py: Generates charts for weekly popular films and recommended films."""
+
 import os
 import datetime
 import re
@@ -8,6 +12,10 @@ import seaborn as sns
 
 from tmdb_api import TheMovieDatabaseAPI
 from secrets import *
+
+__author__ = "Oscar Antonio Padilla"
+__email__ = "PadillaOscarA@gmail.com"
+__status__ = "Development"
 
 
 POP_IMAGE_DIR = os.path.join(os.path.dirname(__file__), 'images', 'temp_pop.png')
@@ -26,6 +34,10 @@ sns.set_style("white")
 
 
 def generate_pop_film_chart(data):
+    """
+    Generates a chart visualizing the weekly popular films ranked with a trendline of the previous rank included.
+    :return: Saves .png in directory /images
+    """
 
     pop_df = pd.DataFrame(data, columns=['Rank', 'Title', 'Year', 'Watches', 'Likes', 'Date', 'Previous Rank'])
 
@@ -78,6 +90,10 @@ def generate_pop_film_chart(data):
 
 
 def generate_rec_chart(data):
+    """
+    Generates a chart visualizing the personalized recommended films.
+    :return: Saves .png in directory /images
+    """
 
     rec_df = pd.DataFrame(data, columns=['Movie_id', 'Title', 'Date'])
 
@@ -127,7 +143,7 @@ def generate_rec_chart(data):
 
 
 if __name__ == '__main__':
-    data1 = [
+    example_data1 = [
         (1, 'Spider-Man: Into the Spider-Verse', '2018', 85603, 45177, '2019-01-25', 3),
         (2, 'The Favourite', '2018', 51138, 19661, '2019-01-25', 2),
         (3, 'Bird Box', '2018', 92460, 16528, '2019-01-25', 1),
@@ -138,18 +154,18 @@ if __name__ == '__main__':
         (8, 'Vice', '2018', 20506, 3998, '2019-01-25', 5),
     ]
 
-    data2 = [
-        (4347, 'Atonement', "1998-07-10", 16),
-        (4995, 'Boogie Nights', "1994-07-10", 3),
-        (49047, 'Gravity', "1997-07-10", 2),
-        (8051, 'Punch-Drunk Love', "1955-07-10", 1),
-        (1391, 'Y Tu Mamá También', "2000-07-10", 1),
-        (103731, 'Mud', "1998-07-10", 1),
-        (12573, 'A Serious Man', "1977-07-10", 1),
-        (44264, 'True Grit', "1999-07-10", 1),
-        (75, 'Mars Attacks!', "1998-07-10", 1),
-        (473, 'Pi', "1998-07-10", 1)
+    example_data2 = [
+        (4347, 'Atonement', "01-01-1998", 16),
+        (4995, 'Boogie Nights', "01-01-1994", 3),
+        (49047, 'Gravity', "01-01-1997", 2),
+        (8051, 'Punch-Drunk Love', "01-01-1955", 1),
+        (1391, 'Y Tu Mamá También', "01-01-2000", 1),
+        (103731, 'Mud', "01-01-1998", 1),
+        (12573, 'A Serious Man', "01-01-1977", 1),
+        (44264, 'True Grit', "01-01-1999", 1),
+        (75, 'Mars Attacks!', "01-01-1998", 1),
+        (473, 'Pi', "01-01-1998", 1)
     ]
 
-    # generate_pop_film_chart(data1)
-    # generate_rec_chart(data2)
+    generate_pop_film_chart(example_data1)
+    generate_rec_chart(example_data2)
