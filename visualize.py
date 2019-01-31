@@ -4,9 +4,10 @@ import re
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
+import matplotlib.image as mpimg
 import seaborn as sns
+from ast import literal_eval
 
-import squarify
 from tmdb_api import TheMovieDatabaseAPI
 from secrets import *
 
@@ -78,11 +79,6 @@ def generate_pop_film_chart(data):
     fig.savefig(POP_IMAGE_DIR)
 
 
-def generate_recommended_chart(data):
-
-    pop_df = pd.DataFrame(data, columns=['Rank', 'Title', 'Year', 'Watches', 'Likes', 'Date', 'Previous Rank'])
-
-
 def generate_rec_chart(data):
 
     rec_df = pd.DataFrame(data, columns=['Movie_id', 'Title', 'Date', 'Count'])
@@ -93,27 +89,43 @@ def generate_rec_chart(data):
     #     filename = "poster_top{}.png".format(str(idx))
     #     directory = os.path.join(os.path.dirname(__file__), 'images', filename)
     #     m.download_movie_poster(m_id, directory)
+    #
+    # # Use posters in plot
+    # img = mpimg.imread(os.path.join(os.path.dirname(__file__), 'images', 'poster_top1.png'))
+    # print(img)
 
-    # Use posters in plot
+    # Year set
+    year = []
+    for film in data:
+        year.append(film[2][:4])
+    rec_df['Year'] = year
 
-    # Prepare data
-    num_films_display = 10
-    years = ['(' + rec_df['Date'][x][:4] + ')' for x in range(num_films_display)]
-    labels = [(rec_df['Title'][x] + '\n' + years[x]) for x in range(num_films_display)]
-    sizes = rec_df['Count'].values.tolist()[:num_films_display]
-    colors = ["#90aeae", "#a0c2c2", "#a9c8c8", "#b3cece", "#bcd4d4",
-              "#c6dada", "#cfe0e0", "#d9e6e6", "#e2ecec", "#ecf2f2"]
+    fig, ax = plt.subplots(1, 1, figsize=(9, 7), dpi=80)
 
-    # Plot
-    plt.figure(figsize=(12, 8), dpi=80)
-    squarify.plot(sizes=sizes, label=labels, color=colors, alpha=.8)
+    # Vertical lines
+    # ax.vlines(x=0.5, ymin=0, ymax=11, color='black', alpha=0.7, linewidth=1, linestyles='dotted')
+    # ax.vlines(x=3.5, ymin=0, ymax=11, color='black', alpha=0.7, linewidth=1, linestyles='dotted')
+
+    # Line segments
+    r = 1
+    for t, y in zip(rec_df['Title'], rec_df['Year']):
+        ax.text(2, r, t + ' (' + y + ')', horizontalalignment='center', verticalalignment='center',
+                fontdict={'size': 20})
+        r += 1
+
+    # Labels
+    ax.set_title("Recommended Films", fontdict={'size': 32})
+    ax.set(xlim=(0, 4), ylim=(10.5, 0.5), ylabel='')
+    ax.set_xticks([])
+    ax.set_yticks([])
 
     # Borders and display
-    plt.title("Recommended Films", size=32)
-    plt.rc('font', size=18)
-    plt.axis('off')
-    plt.show()
-    plt.savefig(RECS_IMAGE_DIR)
+    plt.gca().spines["top"].set_alpha(.0)
+    plt.gca().spines["bottom"].set_alpha(.0)
+    # plt.gca().spines["right"].set_alpha(.0)
+    # plt.gca().spines["left"].set_alpha(.0)
+    # plt.show()
+    fig.savefig(RECS_IMAGE_DIR)
 
 
 if __name__ == '__main__':
@@ -130,16 +142,16 @@ if __name__ == '__main__':
 
     data2 = [
         (4347, 'Atonement', "1998-07-10", 16),
-        (4995, 'Boogie Nights', "1998-07-10", 3),
-        (49047, 'Gravity', "1998-07-10", 2),
-        (8051, 'Punch-Drunk Love', "1998-07-10", 1),
-        (1391, 'Y Tu Mamá También', "1998-07-10", 1),
+        (4995, 'Boogie Nights', "1994-07-10", 3),
+        (49047, 'Gravity', "1997-07-10", 2),
+        (8051, 'Punch-Drunk Love', "1955-07-10", 1),
+        (1391, 'Y Tu Mamá También', "2000-07-10", 1),
         (103731, 'Mud', "1998-07-10", 1),
-        (12573, 'A Serious Man', "1998-07-10", 1),
-        (44264, 'True Grit', "1998-07-10", 1),
+        (12573, 'A Serious Man', "1977-07-10", 1),
+        (44264, 'True Grit', "1999-07-10", 1),
         (75, 'Mars Attacks!', "1998-07-10", 1),
         (473, 'Pi', "1998-07-10", 1)
     ]
 
     # generate_pop_film_chart(data1)
-    # generate_rec_chart(data2)
+    generate_rec_chart(data2)
