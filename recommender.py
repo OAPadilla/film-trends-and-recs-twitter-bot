@@ -154,12 +154,11 @@ def get_recs(metadata_df, user_profile_df, sim_matrix):
         # Get cosine sims for row of current film from user_profile, sort them
         # print(sim_matrix[idx])
         similarity_vals = pd.Series(sim_matrix[idx]).sort_values(ascending=False)
-        print(similarity_vals)
         # Store the indices of the top 10 highest cosine sims
         rec_indices = list(similarity_vals.iloc[1:4].index)
         # Append the recommended films based on current film to our list
         recommended_films.append(metadata_df['title'].iloc[rec_indices])
-
+    print(recommended_films)
     # Filter long list of recs down to 15 HERE
     recommended_films = filter_recs(metadata_df, user_profile_df, recommended_films)
     # Return movie_id, title, release_date, count
@@ -173,15 +172,15 @@ def filter_recs(df, up_df, recommended_films):
     """
     recs = []
     count = {}
-    print(recommended_films)
+
     for row in recommended_films:
         for film in row:
             # Filter out films already seen recently from diary entries
             if (up_df['title'] == film).any():
                 continue
             # Filter out if TMDb vote count too low
-            if df.loc[df['title'] == film]['vote_count'].iloc[0] > 150 \
-                    and df.loc[df['title'] == film]['vote_average'].iloc[0] > 5.5:
+            if df.loc[df['title'] == film]['vote_count'].iloc[0] > 200 \
+                    and df.loc[df['title'] == film]['vote_average'].iloc[0] > 6:
                 # Add movie_id
                 m_id = df.loc[df['title'] == film]['movie_id'].iloc[0]
                 # Add release_date

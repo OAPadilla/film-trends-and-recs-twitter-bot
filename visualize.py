@@ -4,9 +4,7 @@ import re
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
-import matplotlib.image as mpimg
 import seaborn as sns
-from ast import literal_eval
 
 from tmdb_api import TheMovieDatabaseAPI
 from secrets import *
@@ -154,4 +152,4 @@ if __name__ == '__main__':
     ]
 
     # generate_pop_film_chart(data1)
-    generate_rec_chart(data2)
+    # generate_rec_chart(data2)
