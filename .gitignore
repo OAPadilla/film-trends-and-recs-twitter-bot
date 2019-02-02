@@ -1,6 +1,5 @@
 .idea/
-datasets/*
-images/*
+datasets/movielens
 *.sqlite3
 test-sqlite.py
 credentials.py
