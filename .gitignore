@@ -3,6 +3,6 @@ datasets/*
 images/*
 *.sqlite3
 test-sqlite.py
-secrets.py
+credentials.py
 page.html
 __pycache__
