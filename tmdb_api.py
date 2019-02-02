@@ -4,7 +4,7 @@
 import requests
 import wget
 
-from secrets import *
+from credentials import *
 
 __author__ = "Oscar Antonio Padilla"
 __email__ = "PadillaOscarA@gmail.com"

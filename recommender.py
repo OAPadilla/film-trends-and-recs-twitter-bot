@@ -11,7 +11,7 @@ from ast import literal_eval
 import warnings
 
 from tmdb_api import *
-from secrets import *
+from credentials import *
 
 __author__ = "Oscar Antonio Padilla"
 __email__ = "PadillaOscarA@gmail.com"
@@ -133,8 +133,6 @@ def make_sim_matrix(md_soup, up_soup):
     """
     # Frequency counter matrices
     count = CountVectorizer(stop_words=None)
-    # md_soup = [md_soup]
-    # up_soup = [up_soup]
     matrix1 = count.fit_transform(md_soup)
     matrix2 = count.transform(up_soup)
     # Cosine similarity matrix
@@ -158,9 +156,8 @@ def get_recs(metadata_df, user_profile_df, sim_matrix):
         # Get index of film in user_profile row
         idx = up_indices[film]
         # Get cosine sims for row of current film from user_profile, sort them
-        # print(sim_matrix[idx])
         similarity_vals = pd.Series(sim_matrix[idx]).sort_values(ascending=False)
-        # Store the indices of the top 10 highest cosine sims
+        # Store the indices of the top x highest cosine sims
         rec_indices = list(similarity_vals.iloc[1:4].index)
         # Append the recommended films based on current film to our list
         recommended_films.append(metadata_df['title'].iloc[rec_indices])

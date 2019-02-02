@@ -6,7 +6,7 @@ import time
 import tweepy
 import schedule
 
-from secrets import *
+from credentials import *
 from sqlite_db import *
 from letterboxd_scraper import *
 from visualize import *

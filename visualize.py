@@ -11,7 +11,7 @@ import matplotlib.lines as mlines
 import seaborn as sns
 
 from tmdb_api import TheMovieDatabaseAPI
-from secrets import *
+from credentials import *
 
 __author__ = "Oscar Antonio Padilla"
 __email__ = "PadillaOscarA@gmail.com"
