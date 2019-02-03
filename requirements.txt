@@ -1,0 +1,10 @@
+requests==2.18.4
+wget==3.2
+seaborn==0.8.1
+selenium==3.141.0
+pandas==0.22.0
+schedule==0.6.0
+tweepy==3.6.0
+matplotlib==2.1.1
+beautifulsoup4==4.7.1
+scikit_learn==0.20.2
