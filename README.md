@@ -1,11 +1,11 @@
 # LetterBot.ME Films Twitter Bot
-Tweets [Letterboxd](https://letterboxd.com/)'s (a social movie site) weekly top films and trends every Saturday at 5 PM and replies to @mentions with personalized movie recommendations based on a user's Letterboxd diary entries.
+Tweets [Letterboxd](https://letterboxd.com/)'s (a social movie site) weekly top films and trends every Saturday at 5 PM and replies to mentions ('@LetterBotFilm *[Letterboxd username]*') with personalized movie recommendations based on a user's Letterboxd diary entries.
 
 https://twitter.com/LetterBotFilm
 
 ## Preview
 ![weekly popular films](https://i.imgur.com/imGuTLq.png)
-![Recommendations](https://i.imgur.com/t8cq1EV.png)
+![Recommendations](https://i.imgur.com/Z6FEglz.png)
 
 ## File List
 
