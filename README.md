@@ -17,8 +17,11 @@ Automates the twitter bot's functionalities on a schedule and uses StreamListene
 ### letterboxd_scraper.py, sqlite_db.py
 A web scraper to collect Letterboxd’s most popular films of the week and a user’s recent movie entries and wish list using the Selenium and BeautifulSoup libraries. The collected data is stored on a SQLite database.
 
-### recommender.py, tmdb_api.py
+### recommender.py
 A content-based movie recommender system based on the cosine similarities between vectorized film attributes from a generated user profile and TMDb datasets using the Pandas and Scikit-learn libraries.
+
+### tmdb_api.py
+Contains GET requests to TMDB API for movie metadata and poster.
 
 ### visualize.py
 Generates charts for weekly popular films and recommended lists to be tweeted out using the Matplotlib library.
