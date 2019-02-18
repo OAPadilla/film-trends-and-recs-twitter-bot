@@ -3,6 +3,8 @@ Tweets [Letterboxd](https://letterboxd.com/)'s (a social movie site) weekly top 
 
 https://twitter.com/LetterBotFilm
 
+Hosted on a Raspberry Pi 3.
+
 ## Preview
 ![weekly popular films](https://i.imgur.com/imGuTLq.png)
 ![Recommendations](https://i.imgur.com/Z6FEglz.png)
