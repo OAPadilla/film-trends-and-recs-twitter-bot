@@ -17,32 +17,9 @@ __email__ = "PadillaOscarA@gmail.com"
 __status__ = "Development"
 
 
-auth = tweepy.OAuthHandler(C_KEY, C_SECRET)
+auth = tweepy.OAuthHandler(C_KEY, C_SECRET, 'twitter.com')
 auth.set_access_token(A_TOKEN, A_TOKEN_SECRET)
 api = tweepy.API(auth)
-
-
-class MyStreamListener(tweepy.StreamListener):
-    """
-    Tweepy Twitter Streaming API: Receives twitter messages in real time.
-    For replying with recommended films based on tweets providing Letterboxd username
-    """
-    def on_status(self, status, count=1):
-        print("Twitter mention detected...")
-        sn = status.user.screen_name
-        words = status.text.split(' ')
-        if len(words) > 1:
-            lb_username = words[1]
-            tweet_recommended_films(sn, status.id, lb_username)
-        else:
-            api.update_status("@" + sn + " Please provide your Letterboxd username!", in_reply_to_status_id=status.id)
-
-    def on_error(self, status_code):
-        print(status_code)
-        return True
-
-myStream = tweepy.Stream(auth=api.auth, listener=MyStreamListener())
-myStream.filter(track=['@LetterBotFilm'], async=True)
 
 
 def scrape_weekly_pop_films():
@@ -153,6 +130,29 @@ def tweet_recommended_films(screen_name, status_id, letterboxd_name):
     print("Tweeting recommendations to... @{} (Letterboxd: {})".format(screen_name, letterboxd_name))
     status = api.update_with_media(filename=RECS_IMAGE_DIR, status="@" + screen_name, in_reply_to_status_id=status_id)
     print(status.id)
+
+
+class MyStreamListener(tweepy.StreamListener):
+    """
+    Tweepy Twitter Streaming API: Receives twitter messages in real time.
+    For replying with recommended films based on tweets providing Letterboxd username
+    """
+    def on_status(self, status, count=1):
+        print("Twitter mention detected...")
+        sn = status.user.screen_name
+        words = status.text.split(' ')
+        if len(words) > 1:
+            lb_username = words[1]
+            tweet_recommended_films(sn, status.id, lb_username)
+        else:
+            api.update_status("@" + sn + " Please provide your Letterboxd username!", in_reply_to_status_id=status.id)
+
+    def on_error(self, status_code):
+        print(status_code)
+        return True
+
+myStream = tweepy.Stream(auth=api.auth, listener=MyStreamListener())
+myStream.filter(track=['@LetterBotFilm'], async=True)
 
 
 if __name__ == '__main__':
