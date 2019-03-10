@@ -71,11 +71,11 @@ def create_user_profile(d):
 
     # Delete duplicates based on 'title'
     diary = []
-    titles = []
+    titles = {}
     for entry in d:
         if entry['title'] not in titles:
             diary.append(entry)
-            titles.append(entry['title'])
+            titles[entry['title']] = True
 
     for entry in diary:
         if int(entry['rating']) >= 6:
