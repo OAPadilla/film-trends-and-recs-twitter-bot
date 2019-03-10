@@ -106,25 +106,30 @@ def tweet_recommended_films(screen_name, status_id, letterboxd_name, md):
     Tweet replies with recommended films based on tweets provided Letterboxd username
     :return: Integer of status id
     """
-    # Read username of comment: Stream Listener does this
-
     # Scrape letterboxd diary
     diary = scrape_letterboxd_diary(letterboxd_name)
-    # Create user profile and TMDb dataset metadata dataframes
-    print("Creating user profile dataframe...")
-    up = create_user_profile(diary)
-    # Make user word soups
-    up['soup'] = up.apply(make_soup, axis=1)
-    # Find similarity matrix
-    sim_matrix = make_sim_matrix(md['soup'], up['soup'])
-    # Get recs
-    rec_films = get_recs(md, up, sim_matrix)
-    # Visualize recs, saves image locally
-    visualize_recomendations(rec_films)
-    # Tweet reply message with image
-    print("Tweeting recommendations to... @{} (Letterboxd: {})".format(screen_name, letterboxd_name))
-    status = api.update_with_media(filename=RECS_IMAGE_DIR, status="@" + screen_name, in_reply_to_status_id=status_id)
-    print("Success: " + str(status.id) + "\n")
+    if not diary:
+        # Diary scraped was empty, Letterboxd username not found
+        print("Letterboxd profile not found. Tweeting sorry message to... @{}".format(screen_name))
+        status = api.update_status("@" + screen_name + " Sorry, we could not find that Letterboxd profile."
+                                                       " Try a different username!", in_reply_to_status_id=status_id)
+        print("Success: " + str(status.id) + "\n")
+    else:
+        # Create user profile and TMDb dataset metadata dataframes
+        print("Creating user profile dataframe...")
+        up = create_user_profile(diary)
+        # Make user word soups
+        up['soup'] = up.apply(make_soup, axis=1)
+        # Find similarity matrix
+        sim_matrix = make_sim_matrix(md['soup'], up['soup'])
+        # Get recs
+        rec_films = get_recs(md, up, sim_matrix)
+        # Visualize recs, saves image locally
+        visualize_recomendations(rec_films)
+        # Tweet reply message with image
+        print("Tweeting recommendations to... @{} (Letterboxd: {})".format(screen_name, letterboxd_name))
+        status = api.update_with_media(filename=RECS_IMAGE_DIR, status="@" + screen_name, in_reply_to_status_id=status_id)
+        print("Success: " + str(status.id) + "\n")
 
 
 class MyStreamListener(tweepy.StreamListener):
