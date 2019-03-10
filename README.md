@@ -1,11 +1,13 @@
 # LetterBot.ME Films Twitter Bot
-Tweets [Letterboxd](https://letterboxd.com/)'s (a social movie site) weekly top films and trends every Saturday at 5 PM and replies to @mentions with personalized movie recommendations based on a user's Letterboxd diary entries.
+Tweets [Letterboxd](https://letterboxd.com/)'s (a social movie site) weekly top films and trends every Saturday at 5 PM and replies to mentions ('@LetterBotFilm *[Letterboxd username]*') with personalized movie recommendations based on a user's Letterboxd diary entries.
 
 https://twitter.com/LetterBotFilm
 
+Hosted on a Raspberry Pi 3.
+
 ## Preview
 ![weekly popular films](https://i.imgur.com/imGuTLq.png)
-![Recommendations](https://i.imgur.com/t8cq1EV.png)
+![Recommendations](https://i.imgur.com/Z6FEglz.png)
 
 ## File List
 
@@ -15,8 +17,11 @@ Automates the twitter bot's functionalities on a schedule and uses StreamListene
 ### letterboxd_scraper.py, sqlite_db.py
 A web scraper to collect Letterboxd’s most popular films of the week and a user’s recent movie entries and wish list using the Selenium and BeautifulSoup libraries. The collected data is stored on a SQLite database.
 
-### recommender.py, tmdb_api.py
+### recommender.py
 A content-based movie recommender system based on the cosine similarities between vectorized film attributes from a generated user profile and TMDb datasets using the Pandas and Scikit-learn libraries.
+
+### tmdb_api.py
+Contains GET requests to TMDB API for movie metadata and poster.
 
 ### visualize.py
 Generates charts for weekly popular films and recommended lists to be tweeted out using the Matplotlib library.
