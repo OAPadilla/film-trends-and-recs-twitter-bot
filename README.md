@@ -1,7 +1,9 @@
 # LetterBot.ME Films Twitter Bot
-Tweets [Letterboxd](https://letterboxd.com/)'s (a social movie site) weekly top films and trends every Saturday at 5 PM and replies to mentions ('@LetterBotFilm *[Letterboxd username]*') with personalized movie recommendations based on a user's Letterboxd diary entries.
+Tweets [Letterboxd](https://letterboxd.com/)'s (a social movie site) weekly top films and trends every Saturday at 5 PM and replies to mentions with personalized movie recommendations based on a user's Letterboxd diary entries.
 
 https://twitter.com/LetterBotFilm
+
+Usage: Tweet to the bot account '@LetterBotFilm *[Letterboxd_username]*'
 
 Hosted on a Raspberry Pi 3.
 
